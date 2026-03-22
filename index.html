@@ -3,47 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPC to BNS Converter</title>
+    <title>Legal Bridge | IPC to BNS Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); }
+        .glow-shadow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+    </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center p-6">
+<body class="bg-slate-950 text-slate-200 min-h-screen">
 
-    <div class="max-w-2xl w-full space-y-8">
-        <header class="text-center">
-            <h1 class="text-4xl font-bold text-blue-400">IPC ➔ BNS</h1>
-            <p class="text-slate-400 mt-2">Bharatiya Nyaya Sanhita 2023 Transition Tool</p>
-        </header>
-
-        <div class="bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-700">
-            <label class="block text-sm font-medium mb-2 text-slate-300">Enter IPC Section (e.g., 302, 124A, 120B)</label>
-            <div class="flex gap-4">
-                <input type="text" id="lawQuery" 
-                    class="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
-                    placeholder="e.g. 124A"
-                    onkeypress="if(event.key === 'Enter') searchLaw()">
-                
-                <button onclick="searchLaw()" id="searchBtn"
-                    class="bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg font-semibold transition-all">
-                    Search
-                </button>
-            </div>
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                Legal Bridge
+            </h1>
+            <p class="text-slate-400 mt-4 text-lg">Transitioning Indian Justice: IPC 1860 to BNS 2023</p>
         </div>
 
-        <div id="resultCard" class="hidden space-y-6">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <p class="text-xs text-slate-400 uppercase">Original IPC</p>
-                    <h2 id="ipcDisplay" class="text-2xl font-bold text-slate-200">SEC_---</h2>
+        <div class="glass-card border border-slate-700 p-8 rounded-3xl glow-shadow mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <input type="text" id="lawQuery" 
+                        class="w-full bg-slate-900 border border-slate-600 rounded-2xl px-6 py-4 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all uppercase placeholder:normal-case"
+                        placeholder="Enter Section (e.g. 124A, 302, 420)"
+                        onkeypress="if(event.key === 'Enter') searchLaw()">
                 </div>
-                <div class="bg-green-900/30 p-4 rounded-lg border border-green-500/50">
-                    <p class="text-xs text-green-400 uppercase">BNS Equivalent</p>
-                    <h2 id="bnsDisplay" class="text-2xl font-bold text-green-400">SEC_---</h2>
+                <button onclick="searchLaw()" id="searchBtn"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-blue-900/20">
+                    Convert Now
+                </button>
+            </div>
+            <p class="text-slate-500 text-sm mt-4 ml-2">Supports alphanumeric sections (e.g., 124A, 120B)</p>
+        </div>
+
+        <div id="resultCard" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl">
+                    <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Original IPC</span>
+                    <h2 id="ipcDisplay" class="text-4xl font-bold mt-2 text-white">SEC_---</h2>
+                </div>
+                <div class="bg-emerald-900/20 border border-emerald-500/30 p-6 rounded-2xl">
+                    <span class="text-emerald-400 text-xs font-bold uppercase tracking-widest">BNS Equivalent</span>
+                    <h2 id="bnsDisplay" class="text-4xl font-bold mt-2 text-emerald-400">SEC_---</h2>
                 </div>
             </div>
 
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <h3 class="text-lg font-semibold mb-4 text-blue-300">BPR&D Analysis & Summary</h3>
-                <div id="analysisText" class="text-slate-300 leading-relaxed prose prose-invert max-w-none">
+            <div class="glass-card border border-slate-700 rounded-3xl overflow-hidden">
+                <div class="bg-slate-800/50 px-8 py-4 border-b border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-indigo-300">BPR&D Analysis & Legal Summary</h3>
+                    <span class="bg-indigo-900/50 text-indigo-300 text-[10px] px-2 py-1 rounded-full uppercase border border-indigo-500/30">AI Verified</span>
+                </div>
+                <div id="analysisText" class="p-8 text-slate-300 leading-relaxed text-lg space-y-4">
                     </div>
             </div>
         </div>
@@ -53,16 +65,17 @@
         async function searchLaw() {
             const queryInput = document.getElementById('lawQuery').value.trim();
             const btn = document.getElementById('searchBtn');
+            const resultCard = document.getElementById('resultCard');
             
-            if (!queryInput) return alert("Please enter a section number.");
+            if (!queryInput) return;
 
-            // UI Loading State
-            btn.innerText = "Analyzing...";
+            // Loading state
+            btn.innerHTML = `<span class="flex items-center gap-2 italic">Processing...</span>`;
             btn.disabled = true;
 
             try {
-                // UPDATE THIS URL to your actual Render backend URL
-                const response = await fetch('https://YOUR-RENDER-APP-NAME.onrender.com/api/analyze', {
+                // YOUR ACTUAL RENDER URL
+                const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: queryInput })
@@ -73,18 +86,26 @@
                 if (data.error) {
                     alert(data.error);
                 } else {
-                    document.getElementById('resultCard').classList.remove('hidden');
+                    resultCard.classList.remove('hidden');
                     document.getElementById('ipcDisplay').innerText = "SEC_" + queryInput.toUpperCase();
                     document.getElementById('bnsDisplay').innerText = "SEC_" + data.bns_section;
                     
-                    // Convert line breaks or markdown-style bullets to HTML
-                    document.getElementById('analysisText').innerHTML = data.analysis.replace(/\n/g, '<br>');
+                    // Simple Markdown-to-HTML formatting for the AI summary
+                    const formattedText = data.analysis
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') // Bold
+                        .replace(/\n\* /g, '<br>• ') // Bullets
+                        .replace(/\n/g, '<br>'); // Line breaks
+                    
+                    document.getElementById('analysisText').innerHTML = formattedText;
+                    
+                    // Smooth scroll to result
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } catch (err) {
                 console.error(err);
-                alert("Server connection failed. Make sure your Render backend is awake!");
+                alert("Connection Error: Backend might be starting up. Please try again in 30 seconds.");
             } finally {
-                btn.innerText = "Search";
+                btn.innerText = "Convert Now";
                 btn.disabled = false;
             }
         }

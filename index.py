@@ -52,22 +52,29 @@ def analyze_law():
         # Define Primary (General Punishment) and Related (Specific Cases)
         primary = bns_list[0]
         related = bns_list[1:]
-
-        # 3. AI Context: Force the AI to explain the split
+# 3. AI Context: Updated for the 120B Model with Surfing
         law_context = f"IPC {section_clean} maps to Primary BNS {primary}. Related/Specific BNS sections: {', '.join(related) if related else 'None'}."
         
         completion = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {
                     "role": "system", 
-                    "content": "You are a Senior Legal Expert. If an IPC section maps to multiple BNS sections, explain that the BNS has 'unbundled' the law. Define the Primary section as the General Punishment and explain the Related sections as specific aggravations or definitions. Use clear bullet points."
+                    "content": (
+                        "You are a Senior Legal Expert specializing in the 2024 BNS transition. "
+                        "Your goal is to explain how the law has been 'unbundled'. "
+                        "1. Use the provided mapping as your primary guide. "
+                        "2. Use your 'browser_search' tool to verify these section numbers against the FINAL Act No. 45 of 2023. "
+                        "3. If the provided mapping contradicts the final law (e.g., Section 72 being Privacy vs Maiming), "
+                        "politely correct it and provide the official 2024 definition."
+                    )
                 },
                 {"role": "user", "content": f"Explain the transition for IPC {section_clean}. {law_context}"}
             ],
+            # This is the "Surfing" switch you wanted
+            tools=[{"type": "browser_search"}], 
             temperature=0.2
         )
-
         return jsonify({
             "analysis": completion.choices[0].message.content,
             "primary_bns": primary,

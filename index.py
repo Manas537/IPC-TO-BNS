@@ -47,4 +47,6 @@ def analyze_law():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=os.getenv("PORT", default=5000))
+    # Use 0.0.0.0 so Render can see the app from the outside
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

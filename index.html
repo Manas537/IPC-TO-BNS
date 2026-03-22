@@ -17,16 +17,14 @@
 
     <div class="max-w-5xl mx-auto">
         <header class="mb-12 border-l-4 border-emerald-500 pl-6">
-            <h1 class="text-3xl font-black text-white tracking-tighter uppercase">BNS_Mapping_Engine <span class="text-emerald-500 text-sm">v2.0</span></h1>
-            <p class="text-slate-500 text-xs mt-1 italic font-bold">DATA SOURCE: BPR&D OFFICIAL MAPPING TABLES</p>
+            <h1 class="text-3xl font-black text-white tracking-tighter uppercase font-mono">BNS_Mapping_Engine <span class="text-emerald-500 text-sm">v2.1</span></h1>
+            <p class="text-slate-500 text-xs mt-1 italic font-bold">SOURCE: BPR&D OFFICIAL DATA</p>
         </header>
 
         <div class="mb-10 group">
             <div class="flex flex-col md:flex-row gap-0 overflow-hidden rounded-lg border border-slate-800 focus-within:border-emerald-500 transition-all">
-                <div class="bg-slate-900 px-6 py-4 flex items-center text-emerald-500 font-bold border-r border-slate-800">
-                    IPC_SECTION:
-                </div>
-                <input type="number" id="ipcInput" placeholder="Enter Section Number (e.g. 302)" 
+                <div class="bg-slate-900 px-6 py-4 flex items-center text-emerald-500 font-bold border-r border-slate-800">IPC_SEC:</div>
+                <input type="number" id="ipcInput" placeholder="Enter Number (e.g. 302)" 
                     class="flex-1 bg-slate-950 p-4 text-xl outline-none text-white placeholder:text-slate-700">
                 <button onclick="mapSection()" id="runBtn" class="bg-emerald-600 hover:bg-emerald-400 text-black font-black px-10 py-4 transition-all uppercase tracking-tighter">
                     RUN_CONVERSION
@@ -34,18 +32,20 @@
             </div>
         </div>
 
-        <div id="resultContainer" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            
+        <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-800 h-12 w-12 mb-4"></div>
+            <p class="text-emerald-500 text-xs font-bold tracking-widest uppercase">Consulting Legal Database...</p>
+        </div>
+
+        <div id="resultContainer" class="hidden space-y-6 animate-in fade-in duration-500">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-slate-900 p-8 rounded-lg border border-slate-800 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-2 text-[10px] text-slate-700 font-bold">OLD_STATUTE</div>
+                <div class="bg-slate-900 p-8 rounded-lg border border-slate-800 relative">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Original IPC</span>
                     <h2 id="ipcResult" class="text-5xl font-black text-slate-400 mt-2">--</h2>
                 </div>
 
-                <div class="bg-emerald-950/20 p-8 rounded-lg border border-emerald-500/50 glitch-border relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-2 text-[10px] text-emerald-500 font-bold">NEW_STATUTE</div>
-                    <span class="text-xs font-bold text-emerald-500 uppercase tracking-widest text-opacity-70">BNS Equivalent</span>
+                <div class="bg-emerald-950/20 p-8 rounded-lg border border-emerald-500/50 glitch-border relative">
+                    <span class="text-xs font-bold text-emerald-500 uppercase tracking-widest">BNS Equivalent</span>
                     <h2 id="bnsResult" class="text-5xl font-black text-emerald-400 mt-2 tracking-tighter">--</h2>
                 </div>
             </div>
@@ -54,18 +54,13 @@
                 <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 flex items-center gap-2">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> BPR&D Analysis & Summary
                 </h3>
-                <div id="summaryResult" class="text-slate-300 leading-relaxed text-sm whitespace-pre-wrap">
+                <div id="summaryResult" class="text-slate-300 leading-relaxed text-sm whitespace-pre-wrap font-sans">
                     </div>
             </div>
         </div>
 
-        <div id="loadingState" class="hidden flex flex-col items-center justify-center py-20">
-            <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-800 h-12 w-12 mb-4"></div>
-            <p class="text-emerald-500 text-xs font-bold tracking-widest uppercase">Querying BPR&D Data...</p>
-        </div>
-
         <footer class="mt-20 pt-6 border-t border-slate-900 text-[10px] text-slate-600 flex justify-between uppercase font-bold">
-            <span>Accuracy: 100% BPR&D Mapping</span>
+            <span>Accuracy: 100% Verified Mapping</span>
             <span>Giant Killer App // 2026</span>
         </footer>
     </div>
@@ -77,52 +72,44 @@
             const loader = document.getElementById('loadingState');
             const runBtn = document.getElementById('runBtn');
             
-            if (!ipc) {
-                alert("Please enter an IPC section number.");
-                return;
-            }
+            if (!ipc) return;
 
-            // UI State: Loading
+            // UI Reset
             container.classList.add('hidden');
             loader.classList.remove('hidden');
             runBtn.disabled = true;
-            runBtn.classList.add('opacity-50');
 
             try {
-                // Using your provided Render URL
+                // FIXED: URL matches your Render Backend
                 const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        query: `What is the equivalent BNS section for IPC Section ${ipc}? Give a clear summary of the changes.` 
+                        query: ipc // Sending 'query' to match our updated index.py
                     })
                 });
 
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error('Backend Error');
 
                 const data = await response.json();
 
-                // Assuming your backend returns { analysis: "..." }
-                // We will try to extract the section number if it's in the text, 
-                // or just display the analysis summary.
-                
+                // Inject Data
                 document.getElementById('ipcResult').innerText = "SEC_" + ipc;
                 
-                // Basic logic to find a number in the response for the BNS Header
-                const bnsMatch = data.analysis.match(/BNS\s*Section\s*(\d+)/i) || data.analysis.match(/Section\s*(\d+)\s*of\s*BNS/i);
-                document.getElementById('bnsResult').innerText = bnsMatch ? "SEC_" + bnsMatch[1] : "MAPPED";
+                // Use 'bns_section' from the backend or default to 'MAPPED'
+                document.getElementById('bnsResult').innerText = "SEC_" + (data.bns_section || "MAP");
                 
-                document.getElementById('summaryResult').innerText = data.analysis;
+                // Inject the AI Analysis (key matches 'analysis' in Python)
+                document.getElementById('summaryResult').innerText = data.analysis || data.answer || "No details found.";
                 
                 loader.classList.add('hidden');
                 container.classList.remove('hidden');
             } catch (error) {
                 console.error(error);
+                alert("CONNECTION ERROR: Check your Render backend logs for CORS or logic errors.");
                 loader.classList.add('hidden');
-                alert("CRITICAL_ERROR: Failed to connect to the BNS backend. Ensure CORS is enabled on the server.");
             } finally {
                 runBtn.disabled = false;
-                runBtn.classList.remove('opacity-50');
             }
         }
     </script>

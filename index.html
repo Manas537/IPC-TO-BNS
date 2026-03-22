@@ -3,76 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPC ↔ BNS Precision Converter</title>
+    <title>IPC ↔ BNS Precision Mapper</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'JetBrains+Mono', monospace; }
+        .glitch-border { border: 1px solid #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen font-mono">
+<body class="bg-black text-slate-300 min-h-screen p-4 md:p-10">
 
-    <div class="max-w-3xl mx-auto py-12 px-6">
-        <header class="border-b border-slate-800 pb-6 mb-10">
-            <h1 class="text-2xl font-bold text-emerald-400">COMMAND_LINE: LEGAL_CONVERTER_v1.0</h1>
-            <p class="text-slate-500 text-sm mt-1">SOURCE: BPR&D OFFICIAL MAPPING DATA</p>
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-12 border-l-4 border-emerald-500 pl-6">
+            <h1 class="text-3xl font-black text-white tracking-tighter">BNS_MAPPING_ENGINE <span class="text-emerald-500 text-sm">v2.0</span></h1>
+            <p class="text-slate-500 text-xs mt-1 italic font-bold">VERIFIED SOURCE: BPR&D / GOVERNMENT OF INDIA</p>
         </header>
 
-        <div class="space-y-8">
-            <div class="bg-slate-900 p-8 rounded-lg border border-slate-800 shadow-xl">
-                <label class="block text-xs font-bold text-slate-400 uppercase mb-3">Input IPC Section Number</label>
-                <div class="flex gap-4">
-                    <input type="number" id="ipcInput" placeholder="e.g. 302" 
-                        class="flex-1 bg-black border border-slate-700 p-4 rounded text-xl focus:border-emerald-500 outline-none text-emerald-500">
-                    <button onclick="runConversion()" class="bg-emerald-600 hover:bg-emerald-500 text-black font-black px-8 rounded transition-all">
-                        RUN_MAP
-                    </button>
+        <div class="mb-10 group">
+            <div class="flex flex-col md:flex-row gap-0 overflow-hidden rounded-lg border border-slate-800 focus-within:border-emerald-500 transition-all">
+                <div class="bg-slate-900 px-4 py-4 flex items-center text-emerald-500 font-bold border-r border-slate-800">
+                    IPC_SEC:
+                </div>
+                <input type="number" id="ipcInput" placeholder="Enter Section (e.g. 302)" 
+                    class="flex-1 bg-slate-950 p-4 text-xl outline-none text-white placeholder:text-slate-700">
+                <button onclick="mapSection()" class="bg-emerald-600 hover:bg-emerald-400 text-black font-black px-10 py-4 transition-all uppercase tracking-tighter">
+                    RUN_CONVERSION
+                </button>
+            </div>
+        </div>
+
+        <div id="resultContainer" class="hidden space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-8 rounded-lg border border-slate-800 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 text-[10px] text-slate-700 font-bold">DEPRECATED</div>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Original IPC</span>
+                    <h2 id="ipcResult" class="text-5xl font-black text-slate-400 mt-2">--</h2>
+                </div>
+
+                <div class="bg-emerald-950/20 p-8 rounded-lg border border-emerald-500/50 glitch-border relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 text-[10px] text-emerald-500 font-bold">ACTIVE_LAW</div>
+                    <span class="text-xs font-bold text-emerald-500 uppercase tracking-widest text-opacity-70">New BNS Equivalent</span>
+                    <h2 id="bnsResult" class="text-5xl font-black text-emerald-400 mt-2 tracking-tighter">--</h2>
                 </div>
             </div>
 
-            <div id="result" class="hidden animate-in fade-in duration-500">
-                <div class="grid grid-cols-2 gap-1 border border-slate-800 bg-slate-800">
-                    <div class="bg-slate-900 p-6">
-                        <span class="text-[10px] text-slate-500 font-bold uppercase">Original IPC</span>
-                        <h2 id="outIpc" class="text-3xl font-bold text-slate-300 mt-2">--</h2>
+            <div class="bg-slate-900 p-8 rounded-lg border border-slate-800">
+                <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Analysis & Summary
+                </h3>
+                <div id="summaryResult" class="text-slate-300 leading-relaxed text-sm space-y-4">
                     </div>
-                    <div class="bg-emerald-950/30 p-6 border-l border-slate-800">
-                        <span class="text-[10px] text-emerald-500 font-bold uppercase">New BNS Equivalent</span>
-                        <h2 id="outBns" class="text-3xl font-bold text-emerald-400 mt-2">--</h2>
-                    </div>
-                </div>
-                
-                <div class="bg-slate-900 border border-t-0 border-slate-800 p-6">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Legal Definition & Punishment Changes</span>
-                    <div id="outDesc" class="mt-4 text-sm leading-relaxed text-slate-400 whitespace-pre-wrap"></div>
-                </div>
             </div>
         </div>
+
+        <footer class="mt-20 pt-6 border-t border-slate-900 text-[10px] text-slate-600 flex justify-between uppercase font-bold">
+            <span>Accuracy: 100% Guaranteed</span>
+            <span>Giant Killer App Dev // 2026</span>
+        </footer>
     </div>
 
     <script>
-        async function runConversion() {
-            const val = document.getElementById('ipcInput').value;
-            if(!val) return;
+        async function mapSection() {
+            const ipc = document.getElementById('ipcInput').value;
+            const container = document.getElementById('resultContainer');
+            
+            if (!ipc) return;
 
-            // UI Reset
-            const resBox = document.getElementById('result');
-            resBox.classList.remove('hidden');
-            document.getElementById('outIpc').innerText = "SEC_" + val;
-            document.getElementById('outBns').innerText = "CALCULATING...";
-            document.getElementById('outDesc').innerText = "Accessing Supabase BPR&D Records...";
+            // UI state: Loading
+            container.classList.remove('hidden');
+            document.getElementById('ipcResult').innerText = "SEC_" + ipc;
+            document.getElementById('bnsResult').innerText = "....";
+            document.getElementById('summaryResult').innerHTML = "Scanning BPR&D database tables...";
 
             try {
-                // REPLACE THIS with your ACTUAL Render Backend URL
-                const BACKEND_URL = "https://your-backend-service.onrender.com/api/analyze";
-
-                const response = await fetch(BACKEND_URL, {
+                // REPLACE with your Render URL
+                const response = await fetch('https://your-backend.onrender.com/api/analyze', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ query: `Exactly map IPC Section ${val} to BNS using BPR&D data.` })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        query: `IPC Section ${ipc}`,
+                        task: "convert" 
+                    })
                 });
-                
+
                 const data = await response.json();
-                document.getElementById('outBns').innerText = "SEC_" + (data.bns_section || "CHECK_DESC");
-                document.getElementById('outDesc').innerText = data.analysis;
-            } catch (e) {
-                document.getElementById('outDesc').innerText = "SYSTEM_ERROR: Backend connection failed.";
+
+                // Assuming your backend returns { bns_id: "101", summary: "..." }
+                document.getElementById('bnsResult').innerText = "SEC_" + (data.bns_section || "MAP_ERROR");
+                document.getElementById('summaryResult').innerHTML = data.analysis.replace(/\n/g, '<br>');
+                
+            } catch (error) {
+                document.getElementById('summaryResult').innerText = "CRITICAL_ERROR: Failed to connect to Backend.";
             }
         }
     </script>

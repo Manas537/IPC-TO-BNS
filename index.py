@@ -6,22 +6,16 @@ from groq import Groq
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-# 1. Load Environment Variables
+# 1. Setup
 load_dotenv()
-
-# 2. Initialize Flask App
 app = Flask(__name__)
 
-# 3. Configure CORS (Update with your specific Vercel URL)
+# 2. CORS Configuration
 CORS(app, resources={r"/api/*": {"origins": ["https://ipc-to-bns-mauve.vercel.app", "http://localhost:3000"]}})
 
-# 4. Initialize Clients
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_ANON_KEY")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-groq_client = Groq(api_key=GROQ_API_KEY)
+# 3. Clients
+supabase: Client = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_ANON_KEY"))
+groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_law():
@@ -30,73 +24,67 @@ def analyze_law():
         if not user_data:
             return jsonify({"error": "No data received"}), 400
 
-        # FIX: Regex to keep numbers AND letters (124A, 120B, etc.)
-        # This removes spaces and punctuation but keeps alphanumerics
-        raw_query = str(user_data.get('query', '')).strip()
-        section_num = re.sub(r'[^a-zA-Z0-9]', '', raw_query).upper()
+        # --- THE FIX FOR 124A, 120B, etc. ---
+        # 1. Get raw input
+        raw_input = str(user_data.get('query', '')).strip()
+        # 2. Remove "IPC" if typed, remove spaces/symbols, keep numbers and letters
+        section_clean = re.sub(r'[^a-zA-Z0-9]', '', raw_input).upper().replace("IPC", "")
 
-        if not section_num:
-            return jsonify({"error": "Please provide a valid section number."}), 400
+        if not section_clean:
+            return jsonify({"error": "Please enter a valid section (e.g., 302 or 124A)"}), 400
 
-        # 5. Search Supabase (Broadened to find partial/exact matches with letters)
-        db_response = supabase.table("laws_mapping")\
+        # 4. Database Search (Searching as Text)
+        db_res = supabase.table("laws_mapping")\
             .select("*")\
-            .or_(f"ipc_section.eq.{section_num},ipc_section.ilike.%{section_num}%")\
+            .ilike("ipc_section", f"%{section_clean}%")\
             .execute()
         
         law_context = ""
-        bns_val = ""
+        bns_num = ""
 
-        if db_response.data:
-            # Try to find an exact match first for the big green box
-            exact_match = next((item for item in db_response.data if item['ipc_section'].upper() == section_num), db_response.data[0])
-            bns_val = str(exact_match.get('bns_section', ''))
-            
-            context_list = [
-                f"- BNS {item['bns_section']} (IPC {item['ipc_section']}): {item['title']}. Changes: {item['key_changes']}"
-                for item in db_response.data
-            ]
-            law_context = "OFFICIAL BPR&D DATA:\n" + "\n".join(context_list)
-        else:
-            law_context = "No direct database entry found for this alphanumeric section."
+        if db_res.data:
+            # Match the closest alphanumeric string (e.g., "124A" instead of just "124")
+            match = next((i for i in db_res.data if i['ipc_section'].replace(" ", "").upper() == section_clean), db_res.data[0])
+            bns_num = str(match.get('bns_section', ''))
+            law_context = f"OFFICIAL MAPPING: IPC {match['ipc_section']} is BNS {match['bns_section']}. Title: {match['title']}. Changes: {match['key_changes']}"
 
-        # 6. Alphanumeric Fallbacks for UI Consistency
-        if not bns_val:
-            fallbacks = {
-                "124A": "152",
-                "120B": "61",
-                "120A": "61",
-                "376D": "70",
-                "302": "101",
-                "420": "318"
-            }
-            bns_val = fallbacks.get(section_num, "MAPPED")
+        # 5. Safety Net Mapping (Hardcoded for 100% UI accuracy)
+        fallbacks = {
+            "124A": "152", "120B": "61", "302": "101", 
+            "307": "109", "376": "64", "420": "318"
+        }
+        final_bns = bns_num if bns_num else fallbacks.get(section_clean, "MAPPED")
 
-        # 7. AI Analysis
+        # 6. REFINED AI PROMPT (Forcing Accuracy)
         completion = groq_client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "system", 
                     "content": (
-                        "You are a Senior Indian Legal Expert. Analyze the transition from IPC to BNS (2023). "
-                        "Note: IPC 124A (Sedition) is now BNS 152 (Acts endangering sovereignty). "
-                        "Identify the correct BNS mapping and explain changes in definition or punishment using bullet points."
+                        "You are a Senior Legal Expert on the Bharatiya Nyaya Sanhita (BNS) 2023. "
+                        "Your goal is to explain the transition from the old IPC to the new BNS. "
+                        "\nSPECIFIC RULES:"
+                        "\n- IPC 124A (Sedition) is now BNS Section 152 (Acts endangering sovereignty)."
+                        "\n- IPC 302 (Murder) is now BNS Section 101."
+                        "\n- IPC 420 (Cheating) is now BNS Section 318."
+                        "\n- If the database context is provided, use it. If not, use your internal knowledge."
+                        "\n- Provide a professional summary with bullet points."
                     )
                 },
-                {"role": "user", "content": f"Context: {law_context}\n\nMapping Request: IPC Section {section_num}"}
+                {"role": "user", "content": f"Analyze IPC Section {section_clean}. (Context: {law_context})"}
             ],
-            temperature=0.1
+            temperature=0.1 # Keep it strict and factual
         )
 
         return jsonify({
             "analysis": completion.choices[0].message.content,
-            "bns_section": bns_val,
-            "source_data": db_response.data 
+            "bns_section": final_bns,
+            "source_data": db_res.data 
         })
 
     except Exception as e:
-        print(f"Server Error: {e}")
+        print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == '__main__':

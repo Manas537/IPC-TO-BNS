@@ -3,160 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Bridge | BNS Intelligence</title>
+    <title>Legal Bridge | IPC to BNS Expert</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .bns-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3); }
-        .ipc-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-        .shimmer { position: relative; overflow: hidden; }
-        .shimmer::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            animation: shimmer 3s infinite;
-        }
-        @keyframes shimmer { 100% { left: 200%; } }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .glow-border { border: 1px solid rgba(59, 130, 246, 0.3); }
+        .bns-gradient { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
     </style>
 </head>
-<body class="bg-[#020617] text-slate-100 min-h-screen selection:bg-blue-500/30">
+<body class="bg-[#020617] text-slate-200 min-h-screen selection:bg-blue-500/30">
 
-    <nav class="max-w-6xl mx-auto px-6 py-8 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-sm">LB</div>
-            <span class="font-bold tracking-tight text-xl">Legal<span class="text-blue-500">Bridge</span></span>
-        </div>
-        <div class="flex items-center gap-4">
-            <span class="flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20">
-                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                LEXINTEL
-            </span>
-        </div>
-    </nav>
-
-    <main class="max-w-5xl mx-auto px-6 pb-20">
-        <section class="text-center mb-16">
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
-                Decode the <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">BNS Transition</span>
+    <div class="max-w-5xl mx-auto px-4 py-10">
+        <header class="text-center mb-12">
+            <h1 class="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400">
+                Legal Bridge
             </h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-10">
-                Instantly map Indian Penal Code sections to the Bharatiya Nyaya Sanhita with AI-powered unbundling analysis.
+            <p class="text-slate-400 mt-4 text-lg font-light tracking-wide">
+                Advanced AI Mapping: IPC 1860 <span class="mx-2 text-blue-500">→</span> BNS 2023
             </p>
+        </header>
 
-            <div class="relative max-w-2xl mx-auto group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-emerald-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                <div class="relative flex gap-2 bg-slate-900 p-2 rounded-3xl border border-slate-700">
+        <div class="glass-card glow-border p-8 rounded-[2rem] shadow-2xl mb-10">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
                     <input type="text" id="lawQuery" 
-                        class="flex-1 bg-transparent border-none px-6 py-4 text-xl focus:ring-0 outline-none placeholder:text-slate-600 font-semibold" 
-                        placeholder="Enter IPC Section (e.g. 302, 420)">
-                    <button onclick="searchLaw()" id="btn" 
-                        class="bg-white text-slate-950 px-10 py-4 rounded-2xl font-bold hover:bg-blue-50 transition-all active:scale-95 flex items-center gap-2">
-                        Analyze
-                    </button>
+                        class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all uppercase placeholder:capitalize placeholder:text-slate-600"
+                        placeholder="Enter IPC (e.g. 124A, 302, 498A)"
+                        onkeypress="if(event.key === 'Enter') searchLaw()">
                 </div>
+                <button onclick="searchLaw()" id="searchBtn"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-12 py-5 rounded-2xl font-bold text-lg transition-all transform active:scale-95 shadow-lg shadow-blue-900/20">
+                    Analyze
+                </button>
             </div>
-        </section>
-
-        <div id="results" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="glass p-8 rounded-[2rem] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-6 opacity-10">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.86L12 5.84zM5.5 13L2 19h20l-3.5-6h-13zm3.46 4l1.73-3h2.62l1.73 3H8.96z"/></svg>
-                    </div>
-                    <p class="text-blue-400 text-xs font-bold uppercase tracking-[0.2em] mb-4">Legacy Framework</p>
-                    <h2 class="text-slate-500 text-lg font-medium mb-1">Indian Penal Code</h2>
-                    <div id="ipcNum" class="text-6xl font-black tracking-tighter text-white">---</div>
-                </div>
-
-                <div class="bns-gradient p-8 rounded-[2rem] shadow-2xl relative shimmer">
-                    <p class="text-emerald-100/80 text-xs font-bold uppercase tracking-[0.2em] mb-4">2024 Final Act</p>
-                    <h2 class="text-emerald-100 text-lg font-medium mb-1 text-white/90">Bharatiya Nyaya Sanhita</h2>
-                    <div id="bnsPrimary" class="text-6xl font-black tracking-tighter text-white">---</div>
-
-                    <div id="relatedBox" class="mt-8 pt-6 border-t border-white/20 hidden">
-                        <p class="text-[10px] font-extrabold text-emerald-200 uppercase tracking-widest mb-3">Unbundled Specifics:</p>
-                        <div id="relatedList" class="flex flex-wrap gap-2">
-                            </div>
-                    </div>
-                </div>
+            <div class="flex gap-4 mt-4 ml-2">
+                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">ALPHANUMERIC ENABLED</span>
+                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">MULTI-SECTION MAPPING</span>
             </div>
-
-            <div class="glass rounded-[2rem] overflow-hidden">
-                <div class="border-b border-slate-800 bg-slate-800/30 px-8 py-5 flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        Legal Transition Intelligence
-                    </h3>
-                </div>
-                <div id="aiText" class="p-10 text-slate-300 leading-[1.8] text-lg font-light">
-                    </div>
-            </div>
-
         </div>
-    </main>
+
+        <div id="resultCard" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
+                    <span class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em]">Original IPC</span>
+                    <h2 id="ipcDisplay" class="text-5xl font-black mt-3 text-white">SEC_---</h2>
+                </div>
+
+                <div class="bns-gradient p-8 rounded-3xl shadow-xl shadow-emerald-900/20 md:col-span-2 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <span class="text-emerald-100 text-[10px] font-bold uppercase tracking-[0.2em]">Primary BNS Equivalent</span>
+                        <h2 id="bnsDisplay" class="text-5xl font-black mt-3 text-white">SEC_---</h2>
+                        
+                        <div id="relatedContainer" class="mt-6 flex flex-wrap gap-2 items-center hidden">
+                            <span class="text-[10px] font-bold text-emerald-900 bg-emerald-100/30 px-2 py-1 rounded">RELATED:</span>
+                            <div id="relatedList" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                    <div class="absolute -right-4 -bottom-4 opacity-10">
+                        <svg width="160" height="160" viewBox="0 0 24 24" fill="white"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-inner">
+                <div class="bg-slate-900/80 px-10 py-5 border-b border-slate-800 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                        <h3 class="font-bold text-slate-300 tracking-tight">Expert Transition Analysis</h3>
+                    </div>
+                    <span class="text-[10px] text-slate-500 font-mono">GROQ LLAMA 3.3 70B</span>
+                </div>
+                <div id="analysisText" class="p-10 text-slate-300 leading-relaxed text-lg space-y-6">
+                    </div>
+            </div>
+        </div>
+
+        <footer class="mt-20 text-center text-slate-600 text-sm">
+            <p>© 2026 Legal Bridge Intelligence • Verified BNS 2023 Data</p>
+        </footer>
+    </div>
 
     <script>
         async function searchLaw() {
-            const query = document.getElementById('lawQuery').value.trim();
-            const btn = document.getElementById('btn');
-            const results = document.getElementById('results');
+            const queryInput = document.getElementById('lawQuery').value.trim();
+            const btn = document.getElementById('searchBtn');
+            const resultCard = document.getElementById('resultCard');
+            const relatedContainer = document.getElementById('relatedContainer');
+            const relatedList = document.getElementById('relatedList');
             
-            if(!query) return;
+            if (!queryInput) return;
 
-            // UI State Change
-            btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-slate-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 
-                             Analysing...`;
+            // Loading state
+            btn.innerHTML = `<span class="flex items-center gap-3"><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing</span>`;
             btn.disabled = true;
 
             try {
-                const res = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
+                // Ensure this URL is correct for your Render Deployment
+                const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query })
+                    body: JSON.stringify({ query: queryInput })
                 });
-                const data = await res.json();
 
-                if(data.error) {
-                    alert(data.error);
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert("Error: " + data.error);
                 } else {
-                    results.classList.remove('hidden');
-                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                    document.getElementById('ipcNum').innerText = "§ " + query;
-                    document.getElementById('bnsPrimary').innerText = "§ " + data.primary_bns;
-
-                    // Related logic
-                    const relBox = document.getElementById('relatedBox');
-                    const relList = document.getElementById('relatedList');
-                    relList.innerHTML = "";
+                    resultCard.classList.remove('hidden');
                     
-                    if(data.related_bns && data.related_bns.length > 0) {
-                        relBox.classList.remove('hidden');
+                    // Update Primary Displays
+                    document.getElementById('ipcDisplay').innerText = "SEC_" + queryInput.toUpperCase();
+                    document.getElementById('bnsDisplay').innerText = "SEC_" + data.bns_section;
+
+
+
+                    // Handle Related Sections Logic (The Many-to-Many fix)
+                    relatedList.innerHTML = "";
+                    if (data.related_bns && data.related_bns.length > 0) {
+                        relatedContainer.classList.remove('hidden');
                         data.related_bns.forEach(sec => {
-                            relList.innerHTML += `
-                                <span class="bg-white/10 border border-white/20 px-4 py-1.5 rounded-xl text-xs font-bold text-white tracking-tight">
-                                    SEC ${sec}
-                                </span>`;
+                            const span = document.createElement('span');
+                            span.className = "bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full border border-white/10";
+                            span.innerText = "SEC_" + sec;
+                            relatedList.appendChild(span);
                         });
                     } else {
-                        relBox.classList.add('hidden');
+                        relatedContainer.classList.add('hidden');
                     }
 
-                    // Formatting the AI text
-                    document.getElementById('aiText').innerHTML = data.analysis
-                        .replace(/\n\n/g, '<br><br>')
-                        .replace(/\* (.*?):/g, '<strong class="text-white block mt-4">$1:</strong>')
-                        .replace(/•/g, '<span class="text-emerald-400 mr-2">/</span>');
+                    // Rich Text Formatting for AI Analysis
+                    const formattedText = data.analysis
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                        .replace(/\n\* /g, '<br>• ')
+                        .replace(/\n- /g, '<br>• ')
+                        .replace(/\n\d\. /g, (match) => `<br>${match.trim()} `)
+                        .replace(/\n/g, '<br>');
+                    
+                    document.getElementById('analysisText').innerHTML = formattedText;
+                    
+                    // Scroll animation
+                    window.scrollTo({ top: resultCard.offsetTop - 50, behavior: 'smooth' });
                 }
-            } catch(e) {
-                alert("Connection failed. Ensure backend is awake.");
+            } catch (err) {
+                console.error(err);
+                alert("Backend not reachable. It might be 'sleeping' on Render. Try again in 20 seconds.");
             } finally {
-                btn.innerHTML = "Analyze";
+                btn.innerText = "Analyze";
                 btn.disabled = false;
-            }
-        }
-    </script>
-</body>
-</html>

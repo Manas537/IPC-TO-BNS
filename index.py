@@ -56,7 +56,7 @@ def analyze_law():
         law_context = f"IPC {section_clean} maps to Primary BNS {primary}. Related/Specific BNS sections: {', '.join(related) if related else 'None'}."
         
         completion = groq_client.chat.completions.create(
-            model="openai/gpt-oss-120b",
+            model="mistral-small-4-119b-2603",
             messages=[
                 {
                     "role": "system", 

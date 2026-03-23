@@ -9,8 +9,18 @@ LAW_MAP = {
     ],
     "8": [{"bns": "2(10)", "type": "Primary", "subject": "Gender", "summary": "Word 'transgender' added alongside male and female."}],
     "10": [
-        {"bns": "2(19)", "type": "Primary", "subject": "Definition of 'Man'", "summary": "Bifurcated from IPC 10. Standalone definition for male human of any age."},
-        {"bns": "2(35)", "type": "Primary", "subject": "Definition of 'Woman'", "summary": "Bifurcated from IPC 10. Standalone definition for female human of any age."}
+        {
+            "bns": "2(19)", 
+            "type": "Primary", 
+            "subject": "Definition of 'Man'", 
+            "summary": "Bifurcated from IPC 10. Now a standalone definition for a male human of any age."
+        },
+        {
+            "bns": "2(35)", 
+            "type": "Primary", 
+            "subject": "Definition of 'Woman'", 
+            "summary": "Bifurcated from IPC 10. Now a standalone definition for a female human of any age."
+        }
     ],
     "19": [{"bns": "2(16)", "type": "Primary", "subject": "Judge", "summary": "Simplified definition; only 1 out of 4 original illustrations retained."}],
     "21": [{"bns": "2(28)", "type": "Primary", "subject": "Public Servant", "summary": "'Military/Naval' updated to 'Army/Navy'; 'Juryman' excluded."}],

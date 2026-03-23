@@ -11,6 +11,18 @@
         .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
         .glow-border { border: 1px solid rgba(59, 130, 246, 0.3); }
         .bns-gradient { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+        .bns-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body class="bg-[#020617] text-slate-200 min-h-screen selection:bg-blue-500/30">
@@ -40,12 +52,11 @@
             </div>
             <div class="flex gap-4 mt-4 ml-2">
                 <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">ALPHANUMERIC ENABLED</span>
-                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">MULTI-SECTION MAPPING</span>
+                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">20B MODEL ACTIVE</span>
             </div>
         </div>
 
         <div id="resultCard" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
                     <span class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em]">Original IPC</span>
@@ -56,34 +67,25 @@
                     <div class="relative z-10">
                         <span class="text-emerald-100 text-[10px] font-bold uppercase tracking-[0.2em]">Primary BNS Equivalent</span>
                         <h2 id="bnsDisplay" class="text-5xl font-black mt-3 text-white">SEC_---</h2>
-                        
                         <div id="relatedContainer" class="mt-6 flex flex-wrap gap-2 items-center hidden">
                             <span class="text-[10px] font-bold text-emerald-900 bg-emerald-100/30 px-2 py-1 rounded">RELATED:</span>
                             <div id="relatedList" class="flex flex-wrap gap-2"></div>
                         </div>
                     </div>
-                    <div class="absolute -right-4 -bottom-4 opacity-10">
-                        <svg width="160" height="160" viewBox="0 0 24 24" fill="white"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-                    </div>
                 </div>
             </div>
 
-            <div class="glass-card border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-inner">
+            <div class="glass-card border border-slate-800 rounded-[2.5rem] overflow-hidden">
                 <div class="bg-slate-900/80 px-10 py-5 border-b border-slate-800 flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                         <h3 class="font-bold text-slate-300 tracking-tight">Expert Transition Analysis</h3>
                     </div>
-                    <span class="text-[10px] text-slate-500 font-mono">GROQ LLAMA 3.3 70B</span>
+                    <span class="text-[10px] text-slate-500 font-mono">GPT-OSS 20B</span>
                 </div>
-                <div id="analysisText" class="p-10 text-slate-300 leading-relaxed text-lg space-y-6">
-                    </div>
+                <div id="analysisText" class="p-10 text-slate-300 leading-relaxed text-lg space-y-6"></div>
             </div>
         </div>
-
-        <footer class="mt-20 text-center text-slate-600 text-sm">
-            <p>© 2026 Legal Bridge Intelligence • Verified BNS 2023 Data</p>
-        </footer>
     </div>
 
     <script>
@@ -96,18 +98,16 @@
             
             if (!queryInput) return;
 
-            // Loading state
-            btn.innerHTML = `<span class="flex items-center gap-3"><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing</span>`;
+            // 1. Loading State
+            btn.innerHTML = `<span class="flex items-center gap-2"><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Analyzing</span>`;
             btn.disabled = true;
 
             try {
-                // Ensure this URL is correct for your Render Deployment
                 const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: queryInput })
                 });
-
 
                 const data = await response.json();
 
@@ -115,20 +115,16 @@
                     alert("Error: " + data.error);
                 } else {
                     resultCard.classList.remove('hidden');
-                    
-                    // Update Primary Displays
                     document.getElementById('ipcDisplay').innerText = "SEC_" + queryInput.toUpperCase();
-                    document.getElementById('bnsDisplay').innerText = "SEC_" + data.bns_section;
+                    document.getElementById('bnsDisplay').innerText = "SEC_" + data.primary_bns;
 
-
-
-                    // Handle Related Sections Logic (The Many-to-Many fix)
+                    // 2. Handle Related Badges
                     relatedList.innerHTML = "";
                     if (data.related_bns && data.related_bns.length > 0) {
                         relatedContainer.classList.remove('hidden');
                         data.related_bns.forEach(sec => {
                             const span = document.createElement('span');
-                            span.className = "bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full border border-white/10";
+                            span.className = "bns-badge";
                             span.innerText = "SEC_" + sec;
                             relatedList.appendChild(span);
                         });
@@ -136,22 +132,23 @@
                         relatedContainer.classList.add('hidden');
                     }
 
-                    // Rich Text Formatting for AI Analysis
-                    const formattedText = data.analysis
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                    // 3. GPT-OSS 20B Clean Formatting
+                    const formatted = data.analysis
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
                         .replace(/\n\* /g, '<br>• ')
-                        .replace(/\n- /g, '<br>• ')
-                        .replace(/\n\d\. /g, (match) => `<br>${match.trim()} `)
                         .replace(/\n/g, '<br>');
                     
-                    document.getElementById('analysisText').innerHTML = formattedText;
-                    
-                    // Scroll animation
+                    document.getElementById('analysisText').innerHTML = formatted;
                     window.scrollTo({ top: resultCard.offsetTop - 50, behavior: 'smooth' });
                 }
             } catch (err) {
                 console.error(err);
-                alert("Backend not reachable. It might be 'sleeping' on Render. Try again in 20 seconds.");
+                alert("Server is waking up. Please wait 30 seconds and try again.");
             } finally {
                 btn.innerText = "Analyze";
                 btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

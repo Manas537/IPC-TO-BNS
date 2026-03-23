@@ -3,207 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPC-BNS Navigator</title>
+    <title>IPC to BNS Navigator | Legal AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
     <style>
         :root {
             --primary: #2563eb;
-            --bg: #f8fafc;
-            --card: #ffffff;
+            --primary-hover: #1d4ed8;
+            --bg: #f1f5f9;
+            --sidebar: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --border: #e2e8f0;
-            --text: #1e293b;
+            --accent: #dcfce7;
+            --accent-text: #166534;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
 
-        /* Side-by-Side Layout */
-        .container {
+        /* Dashboard Layout */
+        .dashboard {
             display: flex;
             width: 100%;
-            gap: 20px;
-            padding: 20px;
+            height: 100%;
+        }
+
+        /* Left Side: Controls */
+        .sidebar {
+            width: 380px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.02);
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .search-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
             box-sizing: border-box;
         }
 
-        /* Sidebar/Control Panel */
-        .controls {
-            flex: 1;
-            max-width: 350px;
-            background: var(--card);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
 
-        /* Main Output Area */
-        .output-area {
-            flex: 2;
-            background: var(--card);
-            border-radius: 12px;
-            border: 1px solid var(--border);
+        button.analyze-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.analyze-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Right Side: Results */
+        .main-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            background: #ffffff;
+            margin: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             overflow: hidden;
-            position: relative;
         }
 
-        .output-header {
-            padding: 15px 25px;
+        .header {
+            padding: 20px 30px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f1f5f9;
+            background: #fafafa;
         }
 
-        #result-content {
-            padding: 30px;
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .scroll-area {
+            flex: 1;
+            padding: 40px;
             overflow-y: auto;
-            line-height: 1.6;
+            scroll-behavior: smooth;
         }
 
-        /* Table Styling for AI Responses */
-        table {
+        /* Markdown Table Styling */
+        #output table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 25px 0;
+            font-size: 15px;
         }
 
-        th, td {
-            padding: 12px;
+        #output th {
+            background: #f8fafc;
+            padding: 14px;
             border: 1px solid var(--border);
             text-align: left;
+            color: #475569;
         }
 
-        th { background: #f8fafc; font-weight: 600; }
-
-        /* Button Styling */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0 20px;
+        #output td {
+            padding: 14px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            box-sizing: border-box;
+            line-height: 1.5;
         }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
+        #output h3 {
+            margin-top: 40px;
+            color: var(--primary);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        /* Utility */
+        .copy-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        button:hover { opacity: 0.9; }
-
-        .copy-btn {
-            width: auto;
-            padding: 8px 15px;
-            background: #fff;
-            color: var(--text);
-            border: 1px solid var(--border);
-            font-size: 13px;
+        .copy-btn:hover {
+            background: #f8fafc;
         }
 
-        .copy-btn.success {
-            border-color: #22c55e;
-            color: #16a34a;
+        .copy-success {
+            background: var(--accent) !important;
+            color: var(--accent-text) !important;
+            border-color: #bbf7d0 !important;
+        }
+
+        #loader {
+            display: none;
+            margin-top: 20px;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 100px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="controls">
-        <h2>Search</h2>
-        <p style="font-size: 14px; color: #64748b;">Enter an IPC section to see the BNS transition mapping.</p>
-        <input type="text" id="ipc-input" placeholder="e.g. 302">
-        <button onclick="analyzeLaw()">Analyze Transition</button>
+<div class="dashboard">
+    <div class="sidebar">
+        <div class="logo">⚖️ IPC➔BNS</div>
+        <div class="subtitle">Legal Transition Mapping Engine</div>
+
+        <div class="search-group">
+            <label for="ipc-input">Old IPC Section</label>
+            <input type="text" id="ipc-input" placeholder="e.g. 302, 376, 498A" onkeypress="if(event.key==='Enter') analyzeLaw()">
+        </div>
+
+        <button class="analyze-btn" onclick="analyzeLaw()">Analyze Transition</button>
         
-        <div id="loading" style="display:none; margin-top: 20px; text-align: center; color: #64748b;">
-            Crunching legal data...
+        <div id="loader">Processing legal framework...</div>
+
+        <div style="margin-top: auto; font-size: 12px; color: var(--text-muted);">
+            v2.0 • Data Grounded • BNS 2023 Implementation
         </div>
     </div>
 
-    <div class="output-area">
-        <div class="output-header">
-            <span id="output-title">Analysis Result</span>
-            <button class="copy-btn" id="copy-btn" onclick="copyResult()">Copy Analysis</button>
+    <div class="main-content">
+        <div class="header">
+            <h2 id="result-title">Transition Analysis</h2>
+            <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">
+                <span>📋 Copy Analysis</span>
+            </button>
         </div>
-        <div id="result-content">
-            <p style="color: #94a3b8;">Analysis will appear here after search.</p>
+
+        <div class="scroll-area" id="output">
+            <div class="empty-state">
+                <p>Enter an IPC section number in the sidebar to begin the analysis.</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     async function analyzeLaw() {
-        const query = document.getElementById('ipc-input').value;
-        const content = document.getElementById('result-content');
-        const loader = document.getElementById('loading');
-        
-        if (!query) return alert("Please enter a section");
+        const input = document.getElementById('ipc-input').value.trim();
+        const output = document.getElementById('output');
+        const loader = document.getElementById('loader');
+        const title = document.getElementById('result-title');
 
+        if (!input) return;
+
+        // Visual feedback
         loader.style.display = 'block';
-        content.style.opacity = '0.5';
+        output.style.opacity = '0.4';
 
         try {
-            // Replace with your actual Render URL
-            const response = await fetch('https://your-render-app.onrender.com/api/analyze', {
+            const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query })
+                body: JSON.stringify({ query: input })
             });
 
             const data = await response.json();
-            
+
             if (data.error) {
-                content.innerHTML = `<p style="color: red;">${data.error}</p>`;
+                output.innerHTML = `<div style="color: #ef4444; font-weight: 500;">⚠️ ${data.error}</div>`;
             } else {
-                // We use innerHTML because the AI returns Markdown-style tables
-                // In a real app, use a markdown library, but for now:
-                content.innerHTML = formatAIResponse(data.analysis);
-                document.getElementById('output-title').innerText = `IPC ${data.ipc_section} → BNS Analysis`;
+                // Parse the Markdown analysis into HTML
+                output.innerHTML = marked.parse(data.analysis);
+                title.innerText = `IPC ${data.ipc_section} → BNS Transition`;
             }
         } catch (err) {
-            content.innerHTML = `<p style="color: red;">Failed to connect to server.</p>`;
+            output.innerHTML = `<div style="color: #ef4444;">Connection failed. Please ensure the Render server is active.</div>`;
         } finally {
             loader.style.display = 'none';
-            content.style.opacity = '1';
+            output.style.opacity = '1';
         }
     }
 
-    // Simple function to handle basic markdown-to-html for tables
-    function formatAIResponse(text) {
-        // This replaces newlines with breaks and handles basic markdown bolding
-        return text
-            .replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/### (.*?)/g, '<h3>$1</h3>');
-    }
-
-    function copyResult() {
-        const text = document.getElementById('result-content').innerText;
+    function copyToClipboard() {
+        const content = document.getElementById('output').innerText;
         const btn = document.getElementById('copy-btn');
-        
-        navigator.clipboard.writeText(text).then(() => {
-            btn.innerText = '✓ Copied!';
-            btn.classList.add('success');
+        const originalHtml = btn.innerHTML;
+
+        navigator.clipboard.writeText(content).then(() => {
+            btn.innerHTML = '<span>✅ Copied!</span>';
+            btn.classList.add('copy-success');
+            
             setTimeout(() => {
-                btn.innerText = 'Copy Analysis';
-                btn.classList.remove('success');
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('copy-success');
             }, 2000);
         });
     }

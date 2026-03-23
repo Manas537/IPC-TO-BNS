@@ -6,120 +6,95 @@ from groq import Groq
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-# 1. Setup & Configuration
 load_dotenv()
 app = Flask(__name__)
 
-# IMPORTANT: This handles the connection between your Vercel URL and Render Backend
+# Updated CORS to specifically allow your Vercel frontend
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "https://ipc-to-bns-mauve.vercel.app", 
-            "http://localhost:3000",
-            "http://127.0.0.1:5000"
+            "https://ipc-to-bns-mauve.vercel.app",
+            "http://localhost:3000"
         ]
     }
 })
 
-# Initialize Clients
-supabase: Client = create_client(
-    os.environ.get("SUPABASE_URL"), 
-    os.environ.get("SUPABASE_ANON_KEY")
-)
+# Initialize your exact clients
+supabase: Client = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_ANON_KEY"))
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_law():
     try:
-        # Get data from Frontend
         user_data = request.json
-        if not user_data:
-            return jsonify({"error": "No data provided"}), 400
-            
         raw_input = str(user_data.get('query', '')).strip()
         
-        # Clean Input: "IPC 302" -> "302"
+        # Your Cleaning Logic: "IPC 124A" -> "124A"
         section_clean = re.sub(r'[^a-zA-Z0-9]', '', raw_input).upper().replace("IPC", "")
 
         if not section_clean:
             return jsonify({"error": "Please enter a valid section number"}), 400
 
-        # 2. Database Search (Supabase) - Keep 1:Many Logic
-        # This fetches all rows where the IPC section matches.
+        # 1. Your Database Search Logic
         db_res = supabase.table("laws_mapping").select("*").ilike("ipc_section", f"%{section_clean}%").execute()
         
-        # Filtering for exact matches to ensure '30' doesn't match '302'
+        # Your Filter for exact matches
         all_matches = [
             i for i in db_res.data 
             if i['ipc_section'].replace(" ", "").upper() == section_clean
         ]
 
-        # 3. Logic: Identify Primary vs Related (1:Several Mapping)
-        # Fallbacks for high-priority sections if Supabase is down or empty
+        # 2. Your Logic: Identify Primary vs Related
+        # Your exact fallbacks
         fallbacks = {
             "376": ["64", "66", "70", "71", "72"],
             "300": ["101"], "302": ["101"], "124A": ["152"],
             "498A": ["85", "86"], "188": ["223"], "420": ["318"]
         }
 
-        # Create a unique list of BNS sections found in the DB
         bns_list = list(dict.fromkeys([str(i['bns_section']) for i in all_matches]))
-        
-        # Use fallback if DB returned nothing but the code is in our list
         if not bns_list and section_clean in fallbacks:
             bns_list = fallbacks[section_clean]
 
         if not bns_list:
-            return jsonify({"error": "Section mapping not found in our 2024 database."}), 404
+            return jsonify({"error": "Section mapping not found in database."}), 404
 
-        # Separation logic: The first BNS is "Primary", the rest are "Related/Parallel"
+        # Define Primary (General Punishment) and Related (Specific Cases)
         primary = bns_list[0]
         related = bns_list[1:]
+
+        # 3. AI Context (No Browser Search)
+        law_context = f"IPC {section_clean} maps to Primary BNS {primary}. Related/Specific BNS sections: {', '.join(related) if related else 'None'}."
         
-        # Context string for the AI to understand the 'Unbundling'
-        law_context = (
-            f"IPC {section_clean} has been unbundled into multiple BNS sections. "
-            f"Primary Section: {primary}. Parallel/Specific Sections: {', '.join(related) if related else 'None'}."
-        )
-        
-        # 4. AI Explanation Generation (GPT-OSS 20B)
-        # extra_body ensures the 'internal monologue' doesn't crash the API
+        # Using the requested model: llama-3.3-70b-versatile
         completion = groq_client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "system", 
                     "content": (
-                        "You are a Senior Legal Expert. Your task is to explain the 2024 BNS transition. "
-                        "Focus on 'Unbundling': explaining how one IPC section might now be split into several "
-                        "specific BNS sections. Use the provided mapping as your source of truth. "
-                        "Respond in clean Markdown with bullet points."
+                        "You are a Senior Legal Expert on the Indian Penal Code (IPC) and Bharatiya Nyaya Sanhita (BNS). "
+                        "IMPORTANT: IPC 302 is Punishment for Murder. IPC 376 is Punishment for Rape. "
+                        "Explain how the law has been 'unbundled'. Define the Primary section as the General Punishment "
+                        "and explain Related sections as specific aggravations or definitions. Use clear bullet points."
                     )
                 },
-                {
-                    "role": "user", 
-                    "content": f"Explain the transition for IPC {section_clean}. Data: {law_context}"
-                }
+                {"role": "user", "content": f"Explain the transition for IPC {section_clean}. {law_context}"}
             ],
             temperature=0.2,
-            max_tokens=600,
+            # This ensures 'thinking' text doesn't break the JSON output
             extra_body={"reasoning_format": "hidden"} 
         )
 
-        # 5. Return JSON to Frontend
         return jsonify({
             "analysis": completion.choices[0].message.content,
             "primary_bns": primary,
-            "related_bns": related,
-            "is_unbundled": len(related) > 0
+            "related_bns": related
         })
 
     except Exception as e:
-        print(f"Server Error: {str(e)}")
-        return jsonify({"error": "Internal server error. Check Render logs."}), 500
+        return jsonify({"error": str(e)}), 500
 
-# 6. Deployment Entry Point
 if __name__ == '__main__':
-    # PORT is automatically assigned by Render
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Use environment port for deployment (Render/Vercel)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))

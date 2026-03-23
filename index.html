@@ -3,152 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Bridge | IPC to BNS Expert</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>IPC-BNS Navigator</title>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
-        .glow-border { border: 1px solid rgba(59, 130, 246, 0.3); }
-        .bns-gradient { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
-        .bns-badge {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: white;
-            display: inline-flex;
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Side-by-Side Layout */
+        .container {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Sidebar/Control Panel */
+        .controls {
+            flex: 1;
+            max-width: 350px;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* Main Output Area */
+        .output-area {
+            flex: 2;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .output-header {
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            background: #f1f5f9;
+        }
+
+        #result-content {
+            padding: 30px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        /* Table Styling for AI Responses */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th { background: #f8fafc; font-weight: 600; }
+
+        /* Button Styling */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .copy-btn {
+            width: auto;
+            padding: 8px 15px;
+            background: #fff;
+            color: var(--text);
+            border: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .copy-btn.success {
+            border-color: #22c55e;
+            color: #16a34a;
         }
     </style>
 </head>
-<body class="bg-[#020617] text-slate-200 min-h-screen selection:bg-blue-500/30">
+<body>
 
-    <div class="max-w-5xl mx-auto px-4 py-10">
-        <header class="text-center mb-12">
-            <h1 class="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400">
-                Legal Bridge
-            </h1>
-            <p class="text-slate-400 mt-4 text-lg font-light tracking-wide">
-                Advanced AI Mapping: IPC 1860 <span class="mx-2 text-blue-500">→</span> BNS 2023
-            </p>
-        </header>
-
-        <div class="glass-card glow-border p-8 rounded-[2rem] shadow-2xl mb-10">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <input type="text" id="lawQuery" 
-                        class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-6 py-5 text-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all uppercase placeholder:capitalize placeholder:text-slate-600"
-                        placeholder="Enter IPC (e.g. 124A, 302, 498A)"
-                        onkeypress="if(event.key === 'Enter') searchLaw()">
-                </div>
-                <button onclick="searchLaw()" id="searchBtn"
-                    class="bg-blue-600 hover:bg-blue-500 text-white px-12 py-5 rounded-2xl font-bold text-lg transition-all transform active:scale-95 shadow-lg shadow-blue-900/20">
-                    Analyze
-                </button>
-            </div>
-            <div class="flex gap-4 mt-4 ml-2">
-                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">ALPHANUMERIC ENABLED</span>
-                <span class="text-[10px] text-slate-500 border border-slate-800 px-2 py-1 rounded">20B MODEL ACTIVE</span>
-            </div>
-        </div>
-
-        <div id="resultCard" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-900/40 border border-slate-800 p-8 rounded-3xl">
-                    <span class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em]">Original IPC</span>
-                    <h2 id="ipcDisplay" class="text-5xl font-black mt-3 text-white">SEC_---</h2>
-                </div>
-
-                <div class="bns-gradient p-8 rounded-3xl shadow-xl shadow-emerald-900/20 md:col-span-2 relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="text-emerald-100 text-[10px] font-bold uppercase tracking-[0.2em]">Primary BNS Equivalent</span>
-                        <h2 id="bnsDisplay" class="text-5xl font-black mt-3 text-white">SEC_---</h2>
-                        <div id="relatedContainer" class="mt-6 flex flex-wrap gap-2 items-center hidden">
-                            <span class="text-[10px] font-bold text-emerald-900 bg-emerald-100/30 px-2 py-1 rounded">RELATED:</span>
-                            <div id="relatedList" class="flex flex-wrap gap-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-card border border-slate-800 rounded-[2.5rem] overflow-hidden">
-                <div class="bg-slate-900/80 px-10 py-5 border-b border-slate-800 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                        <h3 class="font-bold text-slate-300 tracking-tight">Expert Transition Analysis</h3>
-                    </div>
-                    <span class="text-[10px] text-slate-500 font-mono">GPT-OSS 20B</span>
-                </div>
-                <div id="analysisText" class="p-10 text-slate-300 leading-relaxed text-lg space-y-6"></div>
-            </div>
+<div class="container">
+    <div class="controls">
+        <h2>Search</h2>
+        <p style="font-size: 14px; color: #64748b;">Enter an IPC section to see the BNS transition mapping.</p>
+        <input type="text" id="ipc-input" placeholder="e.g. 302">
+        <button onclick="analyzeLaw()">Analyze Transition</button>
+        
+        <div id="loading" style="display:none; margin-top: 20px; text-align: center; color: #64748b;">
+            Crunching legal data...
         </div>
     </div>
 
-    <script>
-        async function searchLaw() {
-            const queryInput = document.getElementById('lawQuery').value.trim();
-            const btn = document.getElementById('searchBtn');
-            const resultCard = document.getElementById('resultCard');
-            const relatedContainer = document.getElementById('relatedContainer');
-            const relatedList = document.getElementById('relatedList');
+    <div class="output-area">
+        <div class="output-header">
+            <span id="output-title">Analysis Result</span>
+            <button class="copy-btn" id="copy-btn" onclick="copyResult()">Copy Analysis</button>
+        </div>
+        <div id="result-content">
+            <p style="color: #94a3b8;">Analysis will appear here after search.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function analyzeLaw() {
+        const query = document.getElementById('ipc-input').value;
+        const content = document.getElementById('result-content');
+        const loader = document.getElementById('loading');
+        
+        if (!query) return alert("Please enter a section");
+
+        loader.style.display = 'block';
+        content.style.opacity = '0.5';
+
+        try {
+            // Replace with your actual Render URL
+            const response = await fetch('https://your-render-app.onrender.com/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+
+            const data = await response.json();
             
-            if (!queryInput) return;
-
-            // 1. Loading State
-            btn.innerHTML = `<span class="flex items-center gap-2"><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Analyzing</span>`;
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: queryInput })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert("Error: " + data.error);
-                } else {
-                    resultCard.classList.remove('hidden');
-                    document.getElementById('ipcDisplay').innerText = "SEC_" + queryInput.toUpperCase();
-                    document.getElementById('bnsDisplay').innerText = "SEC_" + data.primary_bns;
-
-                    // 2. Handle Related Badges
-                    relatedList.innerHTML = "";
-                    if (data.related_bns && data.related_bns.length > 0) {
-                        relatedContainer.classList.remove('hidden');
-                        data.related_bns.forEach(sec => {
-                            const span = document.createElement('span');
-                            span.className = "bns-badge";
-                            span.innerText = "SEC_" + sec;
-                            relatedList.appendChild(span);
-                        });
-                    } else {
-                        relatedContainer.classList.add('hidden');
-                    }
-
-                    // 3. GPT-OSS 20B Clean Formatting
-                    const formatted = data.analysis
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
-                        .replace(/\n\* /g, '<br>• ')
-                        .replace(/\n/g, '<br>');
-                    
-                    document.getElementById('analysisText').innerHTML = formatted;
-                    window.scrollTo({ top: resultCard.offsetTop - 50, behavior: 'smooth' });
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Server is waking up. Please wait 30 seconds and try again.");
-            } finally {
-                btn.innerText = "Analyze";
-                btn.disabled = false;
+            if (data.error) {
+                content.innerHTML = `<p style="color: red;">${data.error}</p>`;
+            } else {
+                // We use innerHTML because the AI returns Markdown-style tables
+                // In a real app, use a markdown library, but for now:
+                content.innerHTML = formatAIResponse(data.analysis);
+                document.getElementById('output-title').innerText = `IPC ${data.ipc_section} → BNS Analysis`;
             }
+        } catch (err) {
+            content.innerHTML = `<p style="color: red;">Failed to connect to server.</p>`;
+        } finally {
+            loader.style.display = 'none';
+            content.style.opacity = '1';
         }
-    </script>
+    }
+
+    // Simple function to handle basic markdown-to-html for tables
+    function formatAIResponse(text) {
+        // This replaces newlines with breaks and handles basic markdown bolding
+        return text
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/### (.*?)/g, '<h3>$1</h3>');
+    }
+
+    function copyResult() {
+        const text = document.getElementById('result-content').innerText;
+        const btn = document.getElementById('copy-btn');
+        
+        navigator.clipboard.writeText(text).then(() => {
+            btn.innerText = '✓ Copied!';
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.innerText = 'Copy Analysis';
+                btn.classList.remove('success');
+            }, 2000);
+        });
+    }
+</script>
+
 </body>
 </html>

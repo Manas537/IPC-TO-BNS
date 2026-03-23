@@ -43,15 +43,6 @@ def analyze_law():
             i for i in db_res.data 
             if i['ipc_section'].replace(" ", "").upper() == section_clean
         ]
-
-        # 2. Your Logic: Identify Primary vs Related
-        # Your exact fallbacks
-        fallbacks = {
-            "376": ["64", "66", "70", "71", "72"],
-            "300": ["101"], "302": ["101"], "124A": ["152"],
-            "498A": ["85", "86"], "188": ["223"], "420": ["318"]
-        }
-
         bns_list = list(dict.fromkeys([str(i['bns_section']) for i in all_matches]))
         if not bns_list and section_clean in fallbacks:
             bns_list = fallbacks[section_clean]

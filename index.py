@@ -58,22 +58,20 @@ def analyze_law():
         completion = groq_client.chat.completions.create(
             model="openai/gpt-oss-20b",
             messages=[
-                {
-                    "role": "system", 
-                    "content": (
-                        "You are a Senior Legal Expert specializing in the 2024 BNS transition. "
-                        "Your goal is to explain how the law has been 'unbundled'. "
-                        "1. Use the provided mapping as your primary guide. "
-                        "2. Use your 'browser_search' tool to verify these section numbers against the FINAL Act No. 45 of 2023. "
-                        "3. If the provided mapping contradicts the final law (e.g., Section 72 being Privacy vs Maiming), "
-                        "politely correct it and provide the official 2024 definition."
-                    )
-                },
-                {"role": "user", "content": f"Explain the transition for IPC {section_clean}. {law_context}"}
-            ],
-            # This is the "Surfing" switch you wanted
-            tools=[{"type": "browser_search"}], 
-            temperature=0.2
+        {
+            "role": "system", 
+            "content": (
+                "You are 'Legal Bridge Index'. Your only job is to explain the transition "
+                "from IPC to BNS based on the provided data. "
+                "1. Be concise. "
+                "2. Do not hallucinate new sections. "
+                "3. Use the July 2024 Bare Act as your truth."
+            )
+        },
+        {"role": "user", "content": f"Explain the transition for IPC {section_clean}. {law_context}"}
+    ],
+    # No tools, no complex reasoning—just pure speed.
+    temperature=0.1
         )
         return jsonify({
             "analysis": completion.choices[0].message.content,

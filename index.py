@@ -38,7 +38,6 @@ def analyze_law():
         if not section_id:
             return jsonify({"error": "Please provide a valid IPC section number."}), 400
 
-        # 1. Fetch from Hardcoded Mapping
         matches = LAW_MAP.get(section_id)
 
         if not matches:
@@ -47,21 +46,26 @@ def analyze_law():
                 "suggestion": "Try common sections like 302, 376, 420, or 498A."
             }), 404
 
-        # 2. Organize Data into Primary and Related
-        primary_match = next((m for m in matches if m['type'] == 'Primary'), matches[0])
-        related_matches = [m for m in matches if m['type'] == 'Related']
+        # --- UPDATED LOGIC TO FETCH SPECIAL NOTES ---
+        primary_match = next((m for m in matches if m.get('type') == 'Primary'), matches[0])
+        related_matches = [m for m in matches if m.get('type') == 'Related' or m.get('type') == 'Mirror']
+        
+        # Get the special note if it exists in the primary match
+        special_context = primary_match.get('special_note', None)
 
         # 3. Construct Context for the AI
-        # We tell the AI exactly what is Primary and what is Related
         context_payload = f"PRIMARY SECTION: BNS {primary_match['bns']} - {primary_match['subject']}. Summary: {primary_match['summary']}\n"
+        
+        # Add the Special Note to the payload if it exists
+        if special_context:
+            context_payload += f"SPECIAL CONTEXT/FACT: {special_context}\n"
         
         if related_matches:
             context_payload += "RELATED/AGGRAVATED SECTIONS:\n"
             for rm in related_matches:
                 context_payload += f"- BNS {rm['bns']} ({rm['subject']}): {rm['summary']}\n"
 
-        # 4. Generate AI Analysis using Llama 3.3 70B
-        # 4. Generate AI Analysis with Strict Grounding
+        # 4. Generate AI Analysis
         completion = groq_client.chat.completions.create(
             model="openai/gpt-oss-20b",
             messages=[
@@ -69,11 +73,10 @@ def analyze_law():
                     "role": "system", 
                     "content": (
                         "You are a Senior Legal Expert specializing in the IPC to BNS transition. "
-                        "STRICT RULE: Focus EXCLUSIVELY on the provided 'DATABASE CONTEXT' below. "
-                        "Do not use your own internal training knowledge if it conflicts with the database. "
-                        "For example, if the database says IPC 302 is BNS 103, do not suggest it is BNS 302. "
-                        "Explain how the law has been 'unbundled' by identifying the Primary and Related sections "
-                        "using ONLY the provided summaries. If the database says a section is 'New', emphasize that."
+                        "STRICT RULE: Focus EXCLUSIVELY on the provided 'DATABASE CONTEXT'. "
+                        "Explain the 'unbundling' of the law. "
+                        "IMPORTANT: If a 'SPECIAL CONTEXT/FACT' is provided, incorporate it into your "
+                        "explanation as a 'Special Legal Note' to provide historical or cultural context."
                     )
                 },
                 {
@@ -82,16 +85,16 @@ def analyze_law():
                         f"### DATABASE CONTEXT FOR IPC {section_id}:\n"
                         f"{context_payload}\n\n"
                         f"### TASK:\n"
-                        f"Explain the transition for IPC {section_id} using the context above. "
-                        "Clearly label the Primary Section and the Related/Specific Sections."
+                        f"Explain the transition for IPC {section_id}. "
+                        "Use Markdown formatting. Include a table for sections if applicable. "
+                        "Ensure the 'Special Legal Note' is highlighted if it was provided in the context."
                     )
                 }
             ],
-            temperature=0.0, # Set to 0.0 for maximum determinism and zero 'creativity'
+            temperature=0.0,
             extra_body={"reasoning_format": "hidden"}
         )
 
-        # 5. Return JSON to Frontend
         return jsonify({
             "ipc_section": section_id,
             "primary_bns": primary_match['bns'],

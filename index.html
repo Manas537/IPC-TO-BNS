@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,42 +9,52 @@
     
     <style>
         :root {
+            /* Light Mode Colors */
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
-            --accent: #10b981;
             --bg: #f8fafc;
             --card-bg: rgba(255, 255, 255, 0.9);
+            --header-bg: #fafafa;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --glass-border: rgba(226, 232, 240, 0.8);
+            --pill-ipc-bg: #fee2e2;
+            --pill-ipc-text: #991b1b;
+            --pill-bns-bg: #dcfce7;
+            --pill-bns-text: #166534;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        [data-theme="dark"] {
+            /* Dark Mode Colors */
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --header-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(51, 65, 85, 0.8);
+            --pill-ipc-bg: #450a0a;
+            --pill-ipc-text: #fecaca;
+            --pill-bns-bg: #064e3b;
+            --pill-bns-text: #bbf7d0;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at top right, #e2e8f0, #f8fafc);
+            background: var(--bg);
             color: var(--text-main);
-            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             padding: 40px 20px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+        .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 24px; }
 
-        /* --- Header & Search Section --- */
+        /* --- Header & Search --- */
         .glass-header {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -52,186 +62,136 @@
             border-radius: 24px;
             padding: 40px;
             text-align: center;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-badge {
             display: inline-block;
-            background: #dbeafe;
-            color: var(--primary);
+            background: var(--primary);
+            color: white;
             padding: 6px 16px;
             border-radius: 100px;
             font-size: 12px;
             font-weight: 800;
-            letter-spacing: 1px;
             margin-bottom: 16px;
         }
 
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(to right, #1e293b, #2563eb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
 
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            margin: 30px auto 0;
-        }
+        .search-container { position: relative; max-width: 500px; margin: 30px auto 0; }
 
         input {
-            width: 100%;
-            padding: 18px 24px;
-            font-size: 18px;
-            border-radius: 16px;
-            border: 2px solid var(--glass-border);
-            background: #fff;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            font-family: inherit;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            width: 100%; padding: 18px 24px; font-size: 18px; border-radius: 16px;
+            border: 2px solid var(--glass-border); background: var(--header-bg);
+            color: var(--text-main);
         }
 
         .btn-analyze {
-            position: absolute;
-            right: 8px;
-            top: 8px;
-            bottom: 8px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 24px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
+            position: absolute; right: 8px; top: 8px; bottom: 8px;
+            background: var(--primary); color: white; border: none;
+            padding: 0 24px; border-radius: 10px; font-weight: 700; cursor: pointer;
         }
 
-        .btn-analyze:hover {
-            background: var(--primary-dark);
-            transform: scale(1.02);
-        }
-
-        /* --- Main Content Area --- */
+        /* --- Main Content --- */
         .main-card {
-            background: white;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            background: var(--card-bg); border-radius: 24px;
+            border: 1px solid var(--glass-border); min-height: 400px;
+            overflow: hidden; backdrop-filter: blur(10px);
         }
 
         .card-header {
-            padding: 20px 32px;
-            background: #fafafa;
+            padding: 20px 32px; background: var(--header-bg);
             border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* --- Dynamic Result Styles --- */
         .comparison-hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding: 40px;
-            background: linear-gradient(to bottom, #f1f5f9, #ffffff);
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; padding: 40px; border-bottom: 1px solid var(--glass-border);
         }
 
-        .pill {
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+        .pill { padding: 12px 24px; border-radius: 16px; font-weight: 800; font-size: 24px; }
+        .pill.ipc { background: var(--pill-ipc-bg); color: var(--pill-ipc-text); }
+        .pill.bns { background: var(--pill-bns-bg); color: var(--pill-bns-text); }
 
-        .pill.ipc { background: #fee2e2; color: #991b1b; border: 2px solid #fecaca; }
-        .pill.bns { background: #dcfce7; color: #166534; border: 2px solid #bbf7d0; }
-        .arrow-icon { font-size: 24px; color: var(--text-muted); font-weight: 300; }
-
-        .analysis-content {
-            padding: 0 40px 40px;
-            font-size: 16px;
-            color: #334155;
-        }
-
-        /* Markdown Styling */
-        .analysis-content h3 { color: var(--primary); margin: 30px 0 15px; font-size: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        .analysis-content table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
-        .analysis-content th { background: #f8fafc; padding: 12px; text-align: left; font-size: 14px; text-transform: uppercase; color: var(--text-muted); }
-        .analysis-content td { padding: 12px; border-top: 1px solid #e2e8f0; }
-
-        /* Loader */
-        #loader { display: none; padding: 100px; text-align: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .empty-state { padding: 100px; text-align: center; color: var(--text-muted); }
+        .analysis-content { padding: 40px; font-size: 16px; }
         
-        .copy-btn {
-            background: white;
-            border: 1px solid var(--glass-border);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            display: none;
-        }
+        /* Markdown Overrides for Dark Mode */
+        .analysis-content h3 { color: var(--primary); margin: 30px 0 15px; border-bottom: 2px solid var(--glass-border); padding-bottom: 8px; }
+        .analysis-content table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--glass-border); }
+        .analysis-content th { background: var(--header-bg); padding: 12px; text-align: left; color: var(--text-muted); }
+        .analysis-content td { padding: 12px; border-top: 1px solid var(--glass-border); }
+
+        /* Utils */
+        #loader { display: none; padding: 80px; text-align: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--glass-border); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .copy-btn { background: var(--header-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 8px 16px; border-radius: 10px; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header class="glass-header">
+        <button class="theme-toggle" onclick="toggleTheme()" id="theme-icon">🌙</button>
         <span class="logo-badge">BHARATIYA NYAYA SANHITA 2023</span>
         <h1>Legal Transition Engine</h1>
-        <p style="color: var(--text-muted);">Instant mapping and expert analysis from IPC to BNS frameworks.</p>
+        <p style="color: var(--text-muted);">IPC to BNS Mapping Tool</p>
         
         <div class="search-container">
-            <input type="text" id="ipc-input" placeholder="Enter IPC Section (e.g. 302, 376, 420)" onkeypress="if(event.key==='Enter') analyzeLaw()">
+            <input type="text" id="ipc-input" placeholder="IPC Section (e.g. 302, 376)" onkeypress="if(event.key==='Enter') analyzeLaw()">
             <button class="btn-analyze" onclick="analyzeLaw()">Analyze</button>
         </div>
     </header>
 
     <main class="main-card">
         <div class="card-header">
-            <span id="result-status" style="font-weight: 700; font-size: 14px; color: var(--text-muted); text-transform: uppercase;">Awaiting Query</span>
-            <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">📋 Copy Analysis</button>
+            <span id="result-status" style="font-weight: 700; font-size: 14px; color: var(--text-muted);">Awaiting Query</span>
+            <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
         </div>
-
-        <div id="loader">
-            <div class="spinner"></div>
-            <p style="font-weight: 600; color: var(--primary);">Consulting Database & AI...</p>
-        </div>
-
-        <div id="output">
-            <div class="empty-state">
-                <p>Provide an IPC section number to view the transition mapping.</p>
-            </div>
-        </div>
+        <div id="loader"><div class="spinner"></div><p>Searching Database...</p></div>
+        <div id="output"><div style="padding:100px; text-align:center; color:var(--text-muted);">Enter an IPC section above.</div></div>
     </main>
-
-    <footer style="text-align: center; font-size: 12px; color: var(--text-muted);">
-        &copy; 2026 Legal Transition Engine • Verified BNS 2023 Database Grounding
-    </footer>
 </div>
 
 <script>
+    // Theme Logic
+    function toggleTheme() {
+        const html = document.documentElement;
+        const icon = document.getElementById('theme-icon');
+        if (html.getAttribute('data-theme') === 'light') {
+            html.setAttribute('data-theme', 'dark');
+            icon.innerText = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            html.setAttribute('data-theme', 'light');
+            icon.innerText = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    // Load Saved Theme
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-icon').innerText = '☀️';
+    }
+
     async function analyzeLaw() {
         const input = document.getElementById('ipc-input').value.trim();
         const output = document.getElementById('output');
@@ -240,12 +200,9 @@
         const copyBtn = document.getElementById('copy-btn');
 
         if (!input) return;
-
-        // Reset & Load
         output.innerHTML = '';
         loader.style.display = 'block';
-        status.innerText = "Processing...";
-        copyBtn.style.display = 'none';
+        status.innerText = "Analyzing...";
 
         try {
             const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
@@ -253,49 +210,31 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: input })
             });
-
             const data = await response.json();
-
             if (data.error) {
-                output.innerHTML = `<div style="padding: 40px; color: #ef4444; text-align:center; font-weight:600;">⚠️ ${data.error}</div>`;
-                status.innerText = "Error";
+                output.innerHTML = `<div style="padding:40px; color:#ef4444; text-align:center;">${data.error}</div>`;
             } else {
-                status.innerText = `Transition Complete`;
                 copyBtn.style.display = 'block';
-                
-                // Build the "Engaging" Hero UI
+                status.innerText = `IPC ${data.ipc_section} → BNS ${data.primary_bns}`;
                 output.innerHTML = `
                     <div class="comparison-hero">
                         <div class="pill ipc">IPC ${data.ipc_section}</div>
-                        <div class="arrow-icon">➔</div>
+                        <div style="font-size:30px">➔</div>
                         <div class="pill bns">BNS ${data.primary_bns}</div>
                     </div>
-                    <div class="analysis-content">
-                        ${marked.parse(data.analysis)}
-                    </div>
-                `;
+                    <div class="analysis-content">${marked.parse(data.analysis)}</div>`;
             }
         } catch (err) {
-            output.innerHTML = `<div style="padding: 40px; text-align:center; color: #ef4444;">Connection failed. Ensure Render server is active.</div>`;
-            status.innerText = "Connection Failed";
-        } finally {
-            loader.style.display = 'none';
-        }
+            output.innerHTML = `<div style="padding:40px; text-align:center;">Connection Error.</div>`;
+        } finally { loader.style.display = 'none'; }
     }
 
     function copyToClipboard() {
         const content = document.getElementById('output').innerText;
         navigator.clipboard.writeText(content).then(() => {
-            const toast = document.createElement('div');
-            toast.innerText = "📋 Analysis copied to clipboard";
-            toast.style = `position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-                           background: #1e293b; color: white; padding: 12px 24px; border-radius: 12px; 
-                           font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000;`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
+            alert("Analysis copied!");
         });
     }
 </script>
-
 </body>
 </html>

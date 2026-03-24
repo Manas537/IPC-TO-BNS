@@ -11,6 +11,11 @@ from mappings import LAW_MAP
 load_dotenv()
 app = Flask(__name__)
 
+LAW_META = {
+    "IPC": "Indian Penal Code",
+    "BNS": "Bharatiya Nyaya Sanhita"
+}
+
 # 1. Robust CORS Setup
 CORS(app, resources={
     r"/api/*": {

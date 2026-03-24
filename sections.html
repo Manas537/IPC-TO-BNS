@@ -1,0 +1,51 @@
+<style>
+    .category-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        font-family: 'Inter', sans-serif;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .cat-card {
+        padding: 25px;
+        border-radius: 15px;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.3s ease;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .cat-card:hover {
+        transform: translateY(-5px);
+        border-color: #007bff;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    .cat-card h3 { margin: 0 0 10px 0; color: #007bff; font-size: 1.1rem; }
+    .cat-card p { margin: 0; font-size: 0.85rem; color: #666; }
+</style>
+
+<div class="category-container">
+    <h2>Explore BNS by Category</h2>
+    <div class="grid">
+        <a href="/offences-body.html" class="cat-card">
+            <h3>Human Body</h3>
+            <p>Murder, Hurt, Kidnapping (IPC 299-377)</p>
+        </a>
+        <a href="/offences-property.html" class="cat-card">
+            <h3>Property Crimes</h3>
+            <p>Theft, Extortion, Robbery (IPC 378-462)</p>
+        </a>
+        <a href="/offences-women-children.html" class="cat-card">
+            <h3>Women & Children</h3>
+            <p>Rape, Sexual Offences (BNS Chapter V)</p>
+        </a>
+        </div>
+</div>

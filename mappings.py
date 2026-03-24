@@ -12,7 +12,7 @@ LAW_MAP = {
             "subject": "Commencement Power",
             "summary": "NEW PROVISION: Delegated power to the Central Government to notify the start date (July 1, 2024)."
         }
-    ]
+    ], # Closes
     "2": [
         {
             "bns": "1(3)",

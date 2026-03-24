@@ -27,7 +27,19 @@ groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 def clean_section_input(raw_input):
     """Cleans input like 'IPC 376' or 'section 302' to just '376' or '302'"""
     return re.sub(r'[^0-9A-Z]', '', str(raw_input).upper().replace("IPC", "")).strip()
-
+    
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """
+    Dedicated endpoint for Cron-job.org.
+    Keeping the server awake without calling the AI.
+    """
+    return jsonify({
+        "status": "online",
+        "engine": "GPT-OSS-20B",
+        "uptime": "active"
+    }), 200
+    
 @app.route('/api/analyze', methods=['POST', 'OPTIONS'])
 def analyze_law():
     try:

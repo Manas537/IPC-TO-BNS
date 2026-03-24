@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgery & Document Offences | IPC to BNS Guide</title>
+    <style>
+        :root { --primary: #6f42c1; --bg: #ffffff; --text: #333; --card-bg: #f9f5ff; }
+        body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { border-bottom: 2px solid var(--card-bg); padding-bottom: 20px; margin-bottom: 30px; }
+        .back-link { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+        
+        h1 { font-size: 1.8rem; margin: 10px 0; color: #1a1a1a; }
+        .summary-box { background: var(--card-bg); padding: 15px 20px; border-radius: 12px; font-size: 0.95rem; margin-bottom: 30px; border-left: 5px solid var(--primary); }
+        
+        .section-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 15px; 
+        }
+        
+        .law-bubble {
+            display: block;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+        .law-bubble:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111,66,193,0.1);
+        }
+        .law-bubble strong { color: var(--primary); display: block; margin-bottom: 4px; }
+        .law-bubble span { font-size: 0.85rem; color: #666; }
+
+        @media (max-width: 600px) { .section-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <a href="/" class="back-link">← Back to Converter</a>
+        <h1>Offences Relating to Documents</h1>
+    </div>
+
+    <div class="summary-box">
+        <strong>Document Laws in BNS:</strong>
+        <p style="margin: 5px 0;">Chapter XIX of the BNS modernizes the laws on <b>Forgery</b> and <b>Electronic Records</b>. Notably, the possession of forged documents and seals (previously IPC 473 & 474) has been split and remapped to <b>BNS 337</b> and <b>BNS 341</b>. The definitions now explicitly include digital and electronic signatures.</p>
+    </div>
+
+    <div class="section-grid">
+        <a href="/?ipc=463" class="law-bubble">
+            <strong>IPC 463 → BNS 335</strong>
+            <span>Forgery (Definition)</span>
+        </a>
+        <a href="/?ipc=465" class="law-bubble">
+            <strong>IPC 465 → BNS 336</strong>
+            <span>Punishment for Forgery</span>
+        </a>
+        <a href="/?ipc=468" class="law-bubble">
+            <strong>IPC 468 → BNS 336(3)</strong>
+            <span>Forgery for Cheating</span>
+        </a>
+
+        <a href="/?ipc=471" class="law-bubble">
+            <strong>IPC 471 → BNS 340</strong>
+            <span>Using Forged Document as Genuine</span>
+        </a>
+        <a href="/?ipc=474" class="law-bubble">
+            <strong>IPC 474 → BNS 341</strong>
+            <span>Possession of Forged Document</span>
+        </a>
+        <a href="/?ipc=473" class="law-bubble">
+            <strong>IPC 473 → BNS 337</strong>
+            <span>Making/Possessing Counterfeit Seal</span>
+        </a>
+
+        <a href="/?ipc=489A" class="law-bubble">
+            <strong>IPC 489A → BNS 176</strong>
+            <span>Counterfeiting Currency Notes</span>
+        </a>
+        <a href="/?ipc=425" class="law-bubble">
+            <strong>IPC 425 → BNS 324</strong>
+            <span>Mischief (Property Damage)</span>
+        </a>
+        <a href="/?ipc=467" class="law-bubble">
+            <strong>IPC 467 → BNS 338</strong>
+            <span>Forgery of Valuable Security</span>
+        </a>
+    </div>
+
+    <footer style="margin-top: 40px; font-size: 0.8rem; color: #999; text-align: center;">
+        <p>BNS 2023 - Protecting the Integrity of Documents and Electronic Records.</p>
+    </footer>
+</div>
+
+</body>
+</html>

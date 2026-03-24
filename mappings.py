@@ -4,17 +4,15 @@ LAW_MAP = {
             "bns": "1(1)",
             "type": "Primary",
             "subject": "Short title, commencement and application.",
-            "summary": "This subject is covered by six subsections of Section 1 of BNS, corresponding to five separate sections of IPC, sans separate headings thereof. In IPC, the extent of code operation is also given, which is absent in BNS."
-        }
-    ],
-    "New": [
+            "summary": "Covers title and application. Note: The IPC's specific 'extent of operation' text is removed in BNS."
+        },
         {
             "bns": "1(2)",
             "type": "Primary",
-            "subject": "Commencement.",
-            "summary": "By subsection 1(2) of the BNS, the power to appoint the date of commencement is delegated to the Central Government, which was absent in the IPC."
+            "subject": "Commencement Power",
+            "summary": "NEW PROVISION: Delegated power to the Central Government to notify the start date (July 1, 2024)."
         }
-    ],
+    ]
     "2": [
         {
             "bns": "1(3)",
@@ -1039,7 +1037,7 @@ LAW_MAP = {
             "summary": "No change."
         }
     ],
-    "228A (1)/(2)": [
+    "228A": [
         {
             "bns": "72",
             "type": "Primary",
@@ -4007,7 +4005,7 @@ LAW_MAP = {
             "summary": "IPC section is included as a sub-section in BNS sans heading."
         }
     ],
-    "New sub- section": [
+    "474": [
         {
             "bns": "341 (3)",
             "type": "Primary",

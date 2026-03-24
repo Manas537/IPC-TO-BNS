@@ -959,7 +959,7 @@ LAW_MAP = {
             "summary": "Age of Consent: 15 years is replaced by 18 years in BNS. Exception 2 of Section 63 states that \u201csexual intercourse or acts by a man with his wife, the wife not being under 18 years of age, is not rape\u201d."
         }
     ],
-    "376(1)": [
+    "376": [
         {
             "bns": "64",
             "type": "Primary",

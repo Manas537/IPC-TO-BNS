@@ -1,6 +1,6 @@
 import os
 import re
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from groq import Groq
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -11,13 +11,16 @@ from mappings import LAW_MAP
 load_dotenv()
 app = Flask(__name__)
 
-# CORS Setup for your Vercel Frontend
+# 1. Robust CORS Setup
+# We allow the specific Vercel origin and the necessary headers/methods
 CORS(app, resources={
     r"/api/*": {
         "origins": [
             "https://ipc-to-bns-mauve.vercel.app",
             "http://localhost:3000"
-        ]
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
     }
 })
 
@@ -26,24 +29,34 @@ groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 def clean_section_input(raw_input):
     """Cleans input like 'IPC 376' or 'section 302' to just '376' or '302'"""
+    if not raw_input:
+        return ""
     return re.sub(r'[^0-9A-Z]', '', str(raw_input).upper().replace("IPC", "")).strip()
-    
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    """
-    Dedicated endpoint for Cron-job.org.
-    Keeping the server awake without calling the AI.
-    """
+    """Endpoint for Cron-job.org to keep the server awake."""
     return jsonify({
         "status": "online",
         "engine": "GPT-OSS-20B",
         "uptime": "active"
     }), 200
-    
+
 @app.route('/api/analyze', methods=['POST', 'OPTIONS'])
 def analyze_law():
+    # 2. Handle Preflight OPTIONS request explicitly
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "https://ipc-to-bns-mauve.vercel.app")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        return response, 200
+
     try:
         user_data = request.json
+        if not user_data:
+            return jsonify({"error": "No data provided"}), 400
+            
         raw_query = user_data.get('query', '')
         section_id = clean_section_input(raw_query)
 
@@ -58,17 +71,15 @@ def analyze_law():
                 "suggestion": "Try common sections like 302, 376, 420, or 498A."
             }), 404
 
-        # --- UPDATED LOGIC TO FETCH SPECIAL NOTES ---
+        # Logic to fetch Primary and Related/Mirror notes
         primary_match = next((m for m in matches if m.get('type') == 'Primary'), matches[0])
-        related_matches = [m for m in matches if m.get('type') == 'Related' or m.get('type') == 'Mirror']
+        related_matches = [m for m in matches if m.get('type') in ['Related', 'Mirror']]
         
-        # Get the special note if it exists in the primary match
         special_context = primary_match.get('special_note', None)
 
         # 3. Construct Context for the AI
         context_payload = f"PRIMARY SECTION: BNS {primary_match['bns']} - {primary_match['subject']}. Summary: {primary_match['summary']}\n"
         
-        # Add the Special Note to the payload if it exists
         if special_context:
             context_payload += f"SPECIAL CONTEXT/FACT: {special_context}\n"
         
@@ -88,7 +99,7 @@ def analyze_law():
                         "STRICT RULE: Focus EXCLUSIVELY on the provided 'DATABASE CONTEXT'. "
                         "Explain the 'unbundling' of the law. "
                         "IMPORTANT: If a 'SPECIAL CONTEXT/FACT' is provided, incorporate it into your "
-                        "explanation as a 'Special Legal Note' to provide historical or cultural context."
+                        "explanation as a 'Special Legal Note' to provide context."
                     )
                 },
                 {
@@ -99,7 +110,7 @@ def analyze_law():
                         f"### TASK:\n"
                         f"Explain the transition for IPC {section_id}. "
                         "Use Markdown formatting. Include a table for sections if applicable. "
-                        "Ensure the 'Special Legal Note' is highlighted if it was provided in the context."
+                        "Ensure the 'Special Legal Note' is highlighted if it was provided."
                     )
                 }
             ],

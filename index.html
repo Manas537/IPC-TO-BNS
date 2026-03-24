@@ -22,6 +22,7 @@
             --pill-ipc-text: #991b1b;
             --pill-bns-bg: #dcfce7;
             --pill-bns-text: #166534;
+            --nav-bg: rgba(255, 255, 255, 0.8);
         }
 
         [data-theme="dark"] {
@@ -37,6 +38,7 @@
             --pill-ipc-text: #fecaca;
             --pill-bns-bg: #064e3b;
             --pill-bns-text: #bbf7d0;
+            --nav-bg: rgba(15, 23, 42, 0.9);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
@@ -47,10 +49,67 @@
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            padding: 40px 20px;
+            flex-direction: column;
+            align-items: center;
+            padding: 100px 20px 40px; /* Top padding adjusted for fixed nav */
         }
 
+        /* --- NAVIGATION --- */
+        .main-nav {
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2000;
+        }
+
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: var(--header-bg);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        /* --- MAIN CONTENT --- */
         .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 24px; }
 
         .glass-header {
@@ -118,155 +177,4 @@
         .pill.ipc { background: var(--pill-ipc-bg); color: var(--pill-ipc-text); }
         .pill.bns { background: var(--pill-bns-bg); color: var(--pill-bns-text); }
 
-        .analysis-content { padding: 40px; font-size: 16px; line-height: 1.7; }
-        .analysis-content h3 { color: var(--primary); margin: 30px 0 15px; border-bottom: 2px solid var(--glass-border); padding-bottom: 8px; }
-        
-        /* Table Responsiveness */
-        .analysis-content table { 
-            width: 100%; border-collapse: collapse; margin: 20px 0; 
-            border: 1px solid var(--glass-border); display: table;
-        }
-        .analysis-content th { background: var(--header-bg); padding: 12px; text-align: left; color: var(--text-muted); }
-        .analysis-content td { padding: 12px; border-top: 1px solid var(--glass-border); }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            body { padding: 15px 10px; }
-            .glass-header { padding: 30px 20px; border-radius: 20px; }
-            h1 { font-size: 24px; }
-            
-            .search-container { flex-direction: column; gap: 12px; }
-            .btn-analyze { position: static; width: 100%; height: 55px; }
-            
-            .comparison-hero { flex-direction: column; padding: 30px 20px; }
-            .arrow-icon { transform: rotate(90deg); margin: 5px 0; font-size: 24px; }
-            .pill { width: 100%; text-align: center; font-size: 20px; }
-            
-            .analysis-content { padding: 25px 15px; }
-            /* Make tables scrollable on small screens */
-            .analysis-content table { display: block; overflow-x: auto; white-space: nowrap; }
-            
-            .card-header { flex-direction: column; gap: 10px; text-align: center; }
-        }
-
-        #loader { display: none; padding: 80px; text-align: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--glass-border); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .copy-btn { background: var(--header-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 8px 16px; border-radius: 10px; cursor: pointer; display: none; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header class="glass-header">
-        <button class="theme-toggle" onclick="toggleTheme()" id="theme-icon">🌙</button>
-        <span class="logo-badge">BHARATIYA NYAYA SANHITA 2023</span>
-        <h1>Legal Transition Engine</h1>
-        <p style="color: var(--text-muted); font-size: 14px;">Instant IPC to BNS Conversion & Analysis</p>
-        
-        <div class="search-container">
-            <input type="text" id="ipc-input" inputmode="numeric" placeholder="Enter IPC Section (e.g. 302)" onkeypress="if(event.key==='Enter') analyzeLaw()">
-            <button class="btn-analyze" onclick="analyzeLaw()">Analyze</button>
-        </div>
-    </header>
-
-    <main class="main-card">
-        <div class="card-header">
-            <span id="result-status" style="font-weight: 700; font-size: 14px; color: var(--text-muted);">Awaiting Query</span>
-            <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">📋 Copy Analysis</button>
-        </div>
-        
-        <div id="loader">
-            <div class="spinner"></div>
-            <p style="font-weight: 600;">Consulting Legal Database...</p>
-        </div>
-
-        <div id="output">
-            <div style="padding:100px 20px; text-align:center; color:var(--text-muted);">
-                Search an IPC section to see its BNS counterpart and unbundling details.
-            </div>
-        </div>
-    </main>
-</div>
-
-<script>
-    function toggleTheme() {
-        const html = document.documentElement;
-        const icon = document.getElementById('theme-icon');
-        if (html.getAttribute('data-theme') === 'light') {
-            html.setAttribute('data-theme', 'dark');
-            icon.innerText = '☀️';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            html.setAttribute('data-theme', 'light');
-            icon.innerText = '🌙';
-            localStorage.setItem('theme', 'light');
-        }
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('theme-icon').innerText = '☀️';
-    }
-
-    async function analyzeLaw() {
-        const input = document.getElementById('ipc-input').value.trim();
-        const output = document.getElementById('output');
-        const loader = document.getElementById('loader');
-        const status = document.getElementById('result-status');
-        const copyBtn = document.getElementById('copy-btn');
-
-        if (!input) return;
-        
-        output.innerHTML = '';
-        loader.style.display = 'block';
-        status.innerText = "Analyzing Transition...";
-        copyBtn.style.display = 'none';
-
-        try {
-            const response = await fetch('https://ipc-to-bns.onrender.com/api/analyze', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: input })
-            });
-            
-            const data = await response.json();
-            
-            if (data.error) {
-                output.innerHTML = `
-                    <div style="padding:60px 20px; color:#ef4444; text-align:center;">
-                        <div style="font-size:40px; margin-bottom:10px;">⚠️</div>
-                        <div style="font-weight:700;">${data.error}</div>
-                        <div style="margin-top:10px; color:var(--text-muted);">${data.suggestion || ''}</div>
-                    </div>`;
-                status.innerText = "Not Found";
-            } else {
-                copyBtn.style.display = 'block';
-                status.innerText = `Matched: IPC ${data.ipc_section}`;
-                output.innerHTML = `
-                    <div class="comparison-hero">
-                        <div class="pill ipc">IPC ${data.ipc_section}</div>
-                        <div class="arrow-icon" style="font-size:30px; font-weight:bold; color:var(--text-muted);">➔</div>
-                        <div class="pill bns">BNS ${data.primary_bns}</div>
-                    </div>
-                    <div class="analysis-content">${marked.parse(data.analysis)}</div>`;
-            }
-        } catch (err) {
-            output.innerHTML = `<div style="padding:60px; text-align:center; color:#ef4444;">Server Connection Failed. Please try again.</div>`;
-            status.innerText = "Error";
-        } finally { 
-            loader.style.display = 'none'; 
-        }
-    }
-
-    function copyToClipboard() {
-        const content = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(content).then(() => {
-            const btn = document.getElementById('copy-btn');
-            btn.innerText = "✅ Copied!";
-            setTimeout(() => { btn.innerText = "📋 Copy Analysis"; }, 2000);
-        });
-    }
-</script>
-</body>
-</html>
+        .analysis-content { padding: 40px; font-size: 16px;

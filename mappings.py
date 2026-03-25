@@ -1845,6 +1845,14 @@ LAW_MAP = {
             "summary": "No change. Newly added section. \u201cWhoever, purposely or knowingly, by words, either spoken or written, or by signs, or by visible representation, or by electronic communication or by use of financial mean, or otherwise, excites or attempts to excite, secession or armed rebellion or subversive activities, or encourages feelings of separatist activities or endangers sovereignty or unity and integrity of India; or indulges in or commits any such act shall be punished with imprisonment for life or With imprisonment which may extend to seven years, and shall also be liable to fine.\u201d"
         }
     ],
+    "124A": [
+    {
+            "bns": "152",
+            "type": "Replacement",
+            "subject": "Acts endangering sovereignty, unity and integrity of India.",
+            "summary": "IPC 124A (Sedition) is officially repealed. BNS 152 replaces it, removing the term 'sedition' and focusing on secession, armed rebellion, and subversive activities. It also explicitly includes 'electronic communication' and 'use of financial means' as tools for such acts."
+        }
+    ],
     "125": [
         {
             "bns": "153",

@@ -1349,6 +1349,22 @@ LAW_MAP = {
             "summary": "No change. Newly added section. \u201cAny continuing unlawful activity including kidnapping, robbery, vehicle theft, extortion, land grabbing, contract killing, economic offence, cyber- crimes, trafficking of persons, drugs, weapons or illicit goods or services, human trafficking for prostitution or ransom, by any person or a group of persons acting in concert, singly or jointly, either as a member of an organised crime syndicate or on behalf of such syndicate, by use of violence, threat of violence, intimidation, coercion, or by any other unlawful means to obtain direct or indirect material benefit including a financial benefit, shall constitute organised crime\u201d. Newly added section. \u201cWhoever, being a member of a group or gang, either singly or jointly, commits any act of theft, snatching, cheating, unauthorised selling of tickets, unauthorised betting or gambling, selling of public examination question papers or any other similar criminal act, is said to commit petty organised crime\u201d. Newly added section."
         }
     ],
+    "310": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Thug",
+            "summary": "The colonial-era definition of a 'Thug' was omitted as it is redundant in modern criminal law."
+        }
+    ],
+    "311": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Punishment for being a Thug",
+            "summary": "Omitted along with the definition in Section 310."
+        }
+    ],
     "319": [
         {
             "bns": "114",
@@ -1805,6 +1821,14 @@ LAW_MAP = {
             "summary": "No change."
         }
     ],
+    "377": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Unnatural Offences",
+            "summary": "This section was removed to align with the Supreme Court's decriminalization of consensual sexual acts between adults."
+        }
+    ],
     "121": [
         {
             "bns": "147",
@@ -2237,6 +2261,38 @@ LAW_MAP = {
             "summary": "Words \u201c'and also in any part of Her Majesty\u2019s dominions\u201d are excluded."
         }
     ],
+    "264": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Fraudulent use of false instrument for weighing",
+            "summary": "Sections 264-267 regarding Weights and Measures were removed from the penal code as they are now governed by the Legal Metrology Act, 2009."
+        }
+    ],
+    "265": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Fraudulent use of false weight or measure",
+            "summary": "Omitted; now handled under specialized commercial and trade laws."
+        }
+    ],
+    "266": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Being in possession of false weight or measure",
+            "summary": "Omitted to avoid legislative overlap with the Legal Metrology Act."
+        }
+    ],
+    "267": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Making or selling false weight or measure",
+            "summary": "Omitted; fraudulent trade practices regarding measures are now regulated outside the BNS."
+        }
+    ],
     "244": [
         {
             "bns": "187",
@@ -2645,12 +2701,12 @@ LAW_MAP = {
             "summary": "No change."
         }
     ],
-    "new": [
-        {
-            "bns": "226",
-            "type": "Primary",
-            "subject": "Attempt to commit suicide to compel or restrain from applying or restrain of lawful power.",
-            "summary": "\u201cWhoever attempts to commit suicide with the intent to compel or restrain any public servant from discharging his official duty shall be punished with simple imprisonment for a term which may extend to one year, or with fine, or with both, or with community service\u201d."
+    "309": [
+    {
+            "bns": "OMITTED / MOVED UNDER BNS 226",
+            "type": "Repealed",
+            "subject": "Attempt to commit suicide.",
+            "summary": "The general offense of attempting suicide has been omitted. A new BNS section was created under 226 which specifically punishes suicide attempts intended to compel or restrain a public servant from discharging their official duty. General attempts due to mental distress are no longer criminalized."
         }
     ],
     "191": [
@@ -4131,6 +4187,22 @@ LAW_MAP = {
             "type": "Primary",
             "subject": "Punishment for making use of any such false mark.",
             "summary": "IPC section is included as a sub-section in BNS sans heading."
+        }
+    ],
+    "497": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Adultery",
+            "summary": "Omitted following the Joseph Shine v. Union of India judgment. Adultery is no longer a criminal offense in India."
+        }
+    ],
+    "498": [
+        {
+            "bns": "OMITTED",
+            "type": "Repealed",
+            "subject": "Enticing or taking away a married woman with criminal intent",
+            "summary": "This section was omitted as it was considered archaic and discriminatory, treating women as chattel."
         }
     ],
     "503": [

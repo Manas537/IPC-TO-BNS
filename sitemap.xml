@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Nav bar pages -->
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/converter.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/sections.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/about.html</loc>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- BNS Chapter / Offences pages -->
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-body.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-property.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-women.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-public.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-documents.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-state.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/offences-marriage.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/general-exceptions.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipc-to-bns-mauve.vercel.app/punishments.html</loc>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
